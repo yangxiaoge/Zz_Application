@@ -1,1 +1,1 @@
-include ':webdialog'
+include ':webdialog', ':multirecycleitem'
