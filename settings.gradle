@@ -1,1 +1,1 @@
-include ':webdialog', ':multirecycleitem'
+include ':webdialog', ':multirecycleitem', ':mykotlin'
