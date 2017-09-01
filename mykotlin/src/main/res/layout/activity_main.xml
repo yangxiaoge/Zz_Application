@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bruce.kotlin.mytest.MainActivity">
+    tools:context="com.bruce.kotlin.mytest.ui.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -21,7 +21,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center"
-                android:textSize="16sp" />
+                android:textSize="20sp" />
 
             <ImageView
                 android:id="@+id/iv_search"
@@ -34,17 +34,22 @@
 
     </android.support.v7.widget.Toolbar>
 
+    <!--
+        http://blog.csdn.net/csdnwangzhan/article/details/51882360
+        @+id/rg_nav 之所以有 “+”，是因为 rg_nav 是在 fl_content 之后才定义的。
+        @+id/是定义资源，在R.java中生成独一的int型变量，那么就可以直接引用时用
+        @+id/，等到 rg_nav 定义时@+id/会发现已经定义，就不再R.java文件中生成-->
     <FrameLayout
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rg_nav"
+        android:layout_above="@+id/rg_nav"
         android:layout_below="@id/toolbar" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_above="@id/rg_nav"
+        android:layout_above="@+id/rg_nav"
         android:background="@android:color/darker_gray" />
 
     <RadioGroup
