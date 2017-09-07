@@ -5,3 +5,7 @@
 <img src="/screenshots/webdialog.png" width = "350" alt="webdialog" align=center />
 
 - 新增 `multirecycleitem`，RecycleView 多种布局
+
+- 新增 `mykotlin`， 用 kotlin 仿开眼（有时间一点一点做）
+
+- 新增 `hencoder1-1`, [HenCoder 自定义 View 1-1](http://hencoder.com/ui-1-1/)
