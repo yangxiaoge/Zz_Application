@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.yjn.custsignview.SignView
+        android:id="@+id/signview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <Button
+        android:id="@+id/generate_signview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="生成签名"
+        app:layout_constraintTop_toBottomOf="@+id/signview" />
+    <Button
+        android:id="@+id/reset_sign"
+        app:layout_constraintTop_toTopOf="@+id/generate_signview"
+        app:layout_constraintLeft_toRightOf="@+id/generate_signview"
+        android:layout_width="wrap_content"
+        android:text="重写"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        app:layout_constraintTop_toBottomOf="@+id/generate_signview"
+        android:id="@+id/img_from_generated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</android.support.constraint.ConstraintLayout>

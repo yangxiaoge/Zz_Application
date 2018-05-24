@@ -1,1 +1,1 @@
-include ':webdialog', ':multirecycleitem', ':mykotlin', ':hencoder1-1',':greendaodemo'
+include ':webdialog', ':multirecycleitem', ':mykotlin', ':hencoder1-1',':greendaodemo', ':custsignview'
