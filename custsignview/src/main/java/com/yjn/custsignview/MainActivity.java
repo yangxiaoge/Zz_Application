@@ -1,5 +1,6 @@
 package com.yjn.custsignview;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Bitmap signBp = loadBitmapFromView(singView);
+                //保存签名图片到本地文件
                 saveImage(signBp);
 
                 img_from_generated.setImageBitmap(signBp);
@@ -38,8 +40,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 singView.reset();
+
+                //跳转文件管理器选择文件并返回
+//                File file = new File(Environment.getExternalStorageDirectory(),"0001.jpg");
+//                File parentFlie = new File(file.getParent());
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                // intent.setDataAndType(Uri.fromFile(parentFlie), "image/*");
+//                intent.setDataAndType(Uri.fromFile(parentFlie), "*/*");
+//                startActivityForResult(intent,100);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        int i = 1;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
