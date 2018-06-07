@@ -8,6 +8,7 @@ import com.facebook.stetho.Stetho;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 import com.yjn.greendaodemo.bean.DaoMaster;
 import com.yjn.greendaodemo.bean.DaoSession;
+import com.yjn.greendaodemo.bean.NewBeanDao;
 import com.yjn.greendaodemo.bean.UserDao;
 
 import org.greenrobot.greendao.database.Database;
@@ -59,7 +60,7 @@ public class MyApplication extends Application {
                 public void onDropAllTables(Database db, boolean ifExists) {
                     DaoMaster.dropAllTables(db, ifExists);
                 }
-            }, UserDao.class);
+            }, UserDao.class, NewBeanDao.class);
         }
     }
 }
