@@ -25,6 +25,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.fsa.decoder.SymbologyID;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
+import com.seuic.gaopaiyisk.server.GaopaiyiServer;
 import com.seuic.hsiscanner.HSIScanner;
 import com.seuic.utils.SeuicLog;
 
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CompleteCallback, View.OnClickListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
     private SurfaceView mSurfaceView;
     private HSIScanner hsiScanner;
     private Socket mClientSocket;
@@ -53,12 +55,20 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initServer();
         initView();
         initData();
 
         startScanner();
     }
 
+     GaopaiyiServer server;
+
+    //private TextView infoip, msg;
+    private void initServer() {
+        server = new GaopaiyiServer(this);
+//        infoip.setText(server.getIpAddress() + ":" + server.getPort());
+    }
 
     private void initData() {
         initRV();
@@ -84,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("MainActivity", "onResume");
+        Log.e(TAG, "onResume");
 
         hsiScanner.open();
         hsiScanner.setParams(SymbologyID.QR, 0); // 1，表示打开该条码，0 表示关闭
@@ -97,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("MainActivity", "onPause");
+        Log.e(TAG, "onPause");
         //onPause中关闭
         closeScanner();
     }
@@ -105,9 +115,12 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("MainActivity", "onDestroy");
+        Log.e(TAG, "onDestroy");
         //onDestory中释放对象
         HSIScanner.destroyInstance();
+
+        //server服务关闭
+        server.onDestroy();
     }
 
     /**
@@ -258,21 +271,55 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             SeuicLog.d("codeList长度:" + codeList.length);
             StringBuilder sb = new StringBuilder();
             for (String code : codeList) {
-                SeuicLog.d("barcode:" + code);
+
                 sb.append(code);
                 sb.append("\n");
             }
-
+            String barcode = sb.toString().trim();
             //重量
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "12312" : commodityInfo.getWeight();
-            if (mClientSocket == null || (mClientSocket != null && isServerClose(mClientSocket))) {
+            SeuicLog.d("barcode:" + barcode+" weight:"+weight);
+
+            //更新UI数据
+            refreshData(barcode, weight);
+            //发给客户端
+            if (server.printStream != null) {
+                try {
+                    server.printStream.println(sb.toString().trim());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "发送数据给客户端: " + sb.toString().trim());
+                }
+            }
+
+     /*       if (mClientSocket == null || (mClientSocket != null && isServerClose(mClientSocket))) {
                 // TODO: 2018/6/8 先注释掉
                 sendCommodityInfo2Bankend(sb.toString(), weight);
 //                sendPrint2Server(sb.toString(), weight);
             } else {
                 sendPrint2Server(sb.toString(), weight);
-            }
+            }*/
+
+
         }
+    }
+
+    /**
+     * 更新UI数据
+     * @param barcode barcode
+     * @param weight weight
+     */
+    private void refreshData(String barcode, final String weight) {
+        data.add(new CodeItem(barcode, weight));
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvCount.setText(String.valueOf(data.size())); //数量
+                tvWeight.setText(weight); //数量
+                codeListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
@@ -310,16 +357,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
      */
     private void sendPrint2Server(String barcode, final String weight) {
         //更新code list
-        data.add(new CodeItem(barcode, weight));
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tvCount.setText(String.valueOf(data.size())); //数量
-                tvWeight.setText(weight); //数量
-                codeListAdapter.notifyDataSetChanged();
-            }
-        });
+        refreshData(barcode, weight);
 
         //PrintWriter发给服务器
         if (mPrintWriter == null) return;

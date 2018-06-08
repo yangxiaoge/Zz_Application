@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * Created by yangjianan on 2018/6/7.
  */
-public class Server {
+public class ServerBak {
 
     private static boolean mIsServiceDestroyed = false;
     private static String[] mDefinedMessage = new String[]{
