@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--曝光设置-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="曝光" />
+
+        <EditText
+            android:id="@+id/et_value1"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:theme="@style/My_EditText" />
+
+    </LinearLayout>
+
+    <!--识别条码设置-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="识别条码类型" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_codabar"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="CODABAR"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_code11"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="CODE11"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_code128"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="CODE128"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_code39"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="CODE39"
+            android:theme="@style/My_CheckBox" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_code93"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="CODE93"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_datamatrix"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="DATAMATRIX"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_ean8"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="EAN8"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_ean13"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="EAN13"
+            android:theme="@style/My_CheckBox" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_int125"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="INT25"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_maxicode"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="MAXICODE"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_micropdf"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="MICROPDF"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_pdf417"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="PDF417"
+            android:theme="@style/My_CheckBox" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_qr"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="QR"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_upca"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="UPCA"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_upce0"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="UPCE0"
+            android:theme="@style/My_CheckBox" />
+
+        <CheckBox
+            android:id="@+id/cb_gsi128"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="GS1_128"
+            android:theme="@style/My_CheckBox" />
+
+    </LinearLayout>
+
+</LinearLayout>

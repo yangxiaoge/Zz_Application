@@ -12,4 +12,13 @@
         <item name="android:colorControlActivated">@color/colorChecked</item>
         <item name="android:colorControlNormal">@color/colorPrimary</item>
     </style>
+    <style name="My_Button" parent="@android:style/Widget.Material.Button">
+        <item name="android:colorControlActivated">@color/colorChecked</item>
+        <item name="android:colorControlNormal">@color/colorPrimary</item>
+    </style>
+
+    <style name="My_EditText" parent="@android:style/Widget.Material.EditText">
+        <item name="android:colorControlActivated">@color/colorChecked</item>
+        <item name="android:colorControlNormal">@color/colorPrimary</item>
+    </style>
 </resources>
