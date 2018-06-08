@@ -267,8 +267,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "12312" : commodityInfo.getWeight();
             if (mClientSocket == null || (mClientSocket != null && isServerClose(mClientSocket))) {
                 // TODO: 2018/6/8 先注释掉
-//                sendCommodityInfo2Bankend(sb.toString(), weight);
-                sendPrint2Server(sb.toString(), weight);
+                sendCommodityInfo2Bankend(sb.toString(), weight);
+//                sendPrint2Server(sb.toString(), weight);
             } else {
                 sendPrint2Server(sb.toString(), weight);
             }
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             try {
                 //socket = new Socket("192.168.80.64", 7777);
 //                socket = new Socket("192.168.1.117", 8688);
-                socket = new Socket("192.168.1.114", 8688);
+                socket = new Socket("192.168.80.159", 8989);
                 mClientSocket = socket;
                 mPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
                 System.out.println("连接服务器成功");
@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
 
         //PrintWriter发给服务器
         if (mPrintWriter == null) return;
-        mPrintWriter.println(barcode);
+        mPrintWriter.println(barcode.trim());
     }
 
     /**
