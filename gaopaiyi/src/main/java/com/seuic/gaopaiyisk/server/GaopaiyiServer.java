@@ -1,5 +1,7 @@
 package com.seuic.gaopaiyisk.server;
 
+import android.util.Log;
+
 import com.seuic.gaopaiyisk.MainActivity;
 
 import java.io.IOException;
@@ -19,7 +21,7 @@ public class GaopaiyiServer {
     MainActivity activity;
     ServerSocket serverSocket;
     String message = "";
-    static final int socketServerPORT = 8080;
+    static final int socketServerPORT = 9999;
 
     public GaopaiyiServer(MainActivity activity) {
         this.activity = activity;
@@ -57,7 +59,7 @@ public class GaopaiyiServer {
                     message += "#" + count + " from "
                             + socket.getInetAddress() + ":"
                             + socket.getPort() + "\n";
-
+                    Log.e("client ip and port = ",message);
                     activity.runOnUiThread(new Runnable() {
 
                         @Override
@@ -99,6 +101,7 @@ public class GaopaiyiServer {
 
             try {
                 outputStream = hostThreadSocket.getOutputStream();
+                // TODO: 2018/6/11 这里可以将  printStream加入集合中，然后可以遍历发送给多个客户端
                 printStream = new PrintStream(outputStream);
                 printStream.print(msgReply);
                 //printStream.close();

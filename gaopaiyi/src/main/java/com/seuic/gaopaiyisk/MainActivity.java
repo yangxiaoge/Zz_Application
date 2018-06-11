@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
 
             //更新UI数据
             refreshData(barcode, weight);
-            //发给客户端
+            //发给条码给客户端
             if (server.printStream != null) {
                 try {
                     server.printStream.println(sb.toString().trim());
