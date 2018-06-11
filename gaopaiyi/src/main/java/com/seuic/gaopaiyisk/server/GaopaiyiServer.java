@@ -18,10 +18,11 @@ import java.util.Enumeration;
  * 高拍仪服务端，像客户端持续发送条码信息
  */
 public class GaopaiyiServer {
-    MainActivity activity;
-    ServerSocket serverSocket;
-    String message = "";
-    static final int socketServerPORT = 9999;
+    private static String TAG = GaopaiyiServer.class.getSimpleName();
+    private MainActivity activity;
+    private ServerSocket serverSocket;
+    private String message = "";
+    private static final int socketServerPORT = 9999;
 
     public GaopaiyiServer(MainActivity activity) {
         this.activity = activity;
@@ -38,7 +39,7 @@ public class GaopaiyiServer {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                Log.e(TAG, "serverSocket onDestroy 失败");
                 e.printStackTrace();
             }
         }
@@ -59,7 +60,7 @@ public class GaopaiyiServer {
                     message += "#" + count + " from "
                             + socket.getInetAddress() + ":"
                             + socket.getPort() + "\n";
-                    Log.e("client ip and port = ",message);
+                    Log.e(TAG, "client ip and port = " + message);
                     activity.runOnUiThread(new Runnable() {
 
                         @Override
@@ -74,7 +75,7 @@ public class GaopaiyiServer {
 
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                Log.e(TAG, "SocketServer 初始化失败");
                 e.printStackTrace();
             }
         }
@@ -98,7 +99,6 @@ public class GaopaiyiServer {
             OutputStream outputStream;
             String msgReply = "Hello from Server, you are #" + cnt;
 
-
             try {
                 outputStream = hostThreadSocket.getOutputStream();
                 // TODO: 2018/6/11 这里可以将  printStream加入集合中，然后可以遍历发送给多个客户端
@@ -108,27 +108,10 @@ public class GaopaiyiServer {
 
                 message += "replayed: " + msgReply + "\n";
 
-                activity.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-//                        activity.msg.setText(message);
-                    }
-                });
-
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+                Log.e(TAG, "SocketServerReply 出错 " + e.toString());
                 e.printStackTrace();
-                message += "Something wrong! " + e.toString() + "\n";
             }
-
-            activity.runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-//                    activity.msg.setText(message);
-                }
-            });
         }
 
     }
@@ -148,16 +131,15 @@ public class GaopaiyiServer {
                             .nextElement();
 
                     if (inetAddress.isSiteLocalAddress()) {
-                        ip += "Server running at : "
-                                + inetAddress.getHostAddress();
+//                        ip += "Server running at : " + inetAddress.getHostAddress();
+                        ip += inetAddress.getHostAddress();
                     }
                 }
             }
 
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
+            Log.e(TAG, "获取ip 出错 " + e.toString());
             e.printStackTrace();
-            ip += "Something Wrong! " + e.toString() + "\n";
         }
         return ip;
     }

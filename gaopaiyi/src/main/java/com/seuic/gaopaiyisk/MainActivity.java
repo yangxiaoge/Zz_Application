@@ -29,11 +29,6 @@ import com.seuic.gaopaiyisk.server.GaopaiyiServer;
 import com.seuic.hsiscanner.HSIScanner;
 import com.seuic.utils.SeuicLog;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +36,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     private static final String TAG = MainActivity.class.getSimpleName();
     private SurfaceView mSurfaceView;
     private HSIScanner hsiScanner;
-    private Socket mClientSocket;
-    private PrintWriter mPrintWriter;
     private ImageView mIvPlay; //启动开关
     private TextView tvCount;
     private TextView tvWeight;
@@ -58,18 +51,21 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         initServer();
         initView();
         initData();
-
-        startScanner();
+        initScanner();
     }
 
-     GaopaiyiServer server;
+    GaopaiyiServer server;
 
-    //private TextView infoip, msg;
+    /**
+     * 初始化server服务器
+     */
     private void initServer() {
         server = new GaopaiyiServer(this);
-//        infoip.setText(server.getIpAddress() + ":" + server.getPort());
     }
 
+    /**
+     * 初始化数据
+     */
     private void initData() {
         initRV();
     }
@@ -126,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     /**
      * 初始化HSIScanner 对象
      */
-    private void startScanner() {
+    private void initScanner() {
         hsiScanner = HSIScanner.getInstance(this, mSurfaceView);
         hsiScanner.setCompleteCallback(this);
     }
@@ -171,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("版本信息");
         try {
-            builder.setMessage("当前版本为：" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+            builder.setMessage("当前版本为：" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName
+                    + "\n\n" + "本机ip为：" + server.getIpAddress() + "\n\n" + "本机port为：" + server.getPort());
         } catch (PackageManager.NameNotFoundException e) {
             builder.setMessage("");
         }
@@ -278,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             String barcode = sb.toString().trim();
             //重量
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "12312" : commodityInfo.getWeight();
-            SeuicLog.d("barcode:" + barcode+" weight:"+weight);
+            SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
             refreshData(barcode, weight);
@@ -292,22 +289,14 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 }
             }
 
-     /*       if (mClientSocket == null || (mClientSocket != null && isServerClose(mClientSocket))) {
-                // TODO: 2018/6/8 先注释掉
-                sendCommodityInfo2Bankend(sb.toString(), weight);
-//                sendPrint2Server(sb.toString(), weight);
-            } else {
-                sendPrint2Server(sb.toString(), weight);
-            }*/
-
-
         }
     }
 
     /**
      * 更新UI数据
+     *
      * @param barcode barcode
-     * @param weight weight
+     * @param weight  weight
      */
     private void refreshData(String barcode, final String weight) {
         data.add(new CodeItem(barcode, weight));
@@ -320,85 +309,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 codeListAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    /**
-     * 初始化socket
-     *
-     * @param barcode barcode
-     * @param weight  weight
-     */
-    private void sendCommodityInfo2Bankend(String barcode, String weight) {
-        int retryCount = 3; //重连尝试
-        Socket socket = null;
-        while (socket == null && retryCount > 0) {
-            try {
-                //socket = new Socket("192.168.80.64", 7777);
-//                socket = new Socket("192.168.1.117", 8688);
-                socket = new Socket("192.168.80.159", 8989);
-                mClientSocket = socket;
-                mPrintWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-                System.out.println("连接服务器成功");
-                //发送数据给服务器
-                sendPrint2Server(barcode, weight);
-            } catch (IOException e) {
-                retryCount--;
-                e.printStackTrace();
-                releaseSocket();
-            }
-
-        }
-    }
-
-    /**
-     * 发送数据给服务器
-     *
-     * @param barcode barcode
-     */
-    private void sendPrint2Server(String barcode, final String weight) {
-        //更新code list
-        refreshData(barcode, weight);
-
-        //PrintWriter发给服务器
-        if (mPrintWriter == null) return;
-        mPrintWriter.println(barcode.trim());
-    }
-
-    /**
-     * 判断是否断开连接，断开返回 true, 没有返回 false
-     *
-     * @param socket
-     * @return
-     */
-    private Boolean isServerClose(Socket socket) {
-        try {
-            socket.sendUrgentData(0);// 发送 1 个字节的紧急数据，默认情况下，服务器端没有开启紧急数据处理，不影响正常通信
-            return false;
-        } catch (Exception se) {
-            se.printStackTrace();
-            return true;
-        }
-    }
-
-    /*释放资源*/
-    private void releaseSocket() {
-        if (mClientSocket != null) {
-            try {
-                mClientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mClientSocket = null;
-        }
-
-        if (mPrintWriter != null) {
-            try {
-                mPrintWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mPrintWriter = null;
-        }
     }
 
     @Override
