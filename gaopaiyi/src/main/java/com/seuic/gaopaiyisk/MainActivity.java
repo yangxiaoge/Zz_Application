@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         builder.setTitle("版本信息");
         try {
             builder.setMessage("当前版本为：" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName
-                    + "\n\n" + "本机ip为：" + server.getIpAddress() + "\n\n" + "本机port为：" + server.getPort());
+                    + "\n\n" + "本机ip为：" + server.getIpAddress() + "\n" + "本机port为：" + server.getPort());
         } catch (PackageManager.NameNotFoundException e) {
             builder.setMessage("");
         }
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             }
             String barcode = sb.toString().trim();
             //重量
-            String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "12312" : commodityInfo.getWeight();
+            String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "" : commodityInfo.getWeight();
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
@@ -316,14 +316,17 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         switch (v.getId()) {
             case R.id.iv_play:
                 if (!isOpened) {
-                    mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
-                    isOpened = true;
                     //打开和设置参数
-                    hsiScanner.open();
-                    //可以设置多个，具体看SymbologyID中
-                    //hsiScanner.setParams(SymbologyID.CODE128, 1); // 1，表示打开该条码，0 表示关闭
-                    //hsiScanner.setParams(SymbologyID.QR, 1); // 1，表示打开该条码，0 表示关闭
-                    Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
+                    boolean startSuccess = hsiScanner.open();
+                    if (startSuccess){
+                        Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
+                        mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
+                        isOpened = true;
+                    }else {
+                        isOpened = false;
+                        closeScanner();
+                        Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
                     isOpened = false;
