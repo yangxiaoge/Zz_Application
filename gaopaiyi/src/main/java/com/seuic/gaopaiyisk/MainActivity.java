@@ -1,6 +1,8 @@
 package com.seuic.gaopaiyisk;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,11 +46,15 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     private List<CodeItem> data;
     private RecyclerView codeListRV;
     private CodeListAdapter codeListAdapter;
+    private SharedPreferences sharedPreferences;
+    private String SPNAME = "gaopaiyisp"; //SP名称
+    private static int EXPOSURE = 1500; //默认的曝光时间
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sharedPreferences = getSharedPreferences(SPNAME, Context.MODE_PRIVATE);
         initServer();
         initView();
         initData();
@@ -92,11 +99,16 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         super.onResume();
         Log.e(TAG, "onResume");
 
-        hsiScanner.open();
-        hsiScanner.setParams(SymbologyID.QR, 0); // 1，表示打开该条码，0 表示关闭
+        if (hsiScanner != null) {
+            isOpened = hsiScanner.open(1280, 720);
+            if (isOpened) {
+                hsiScanner.setCompleteCallback(this);
 
-        isOpened = true;
-        mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
+                //设置参数
+                setScanParams();
+                mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
+            }
+        }
 
     }
 
@@ -114,9 +126,37 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         Log.e(TAG, "onDestroy");
         //onDestory中释放对象
         HSIScanner.destroyInstance();
-
         //server服务关闭
         server.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_play:
+                if (!isOpened) {
+                    //打开和设置参数
+                    isOpened = hsiScanner.open(1280, 720);
+                    if (isOpened) {
+                        Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
+                        //设置参数
+                        setScanParams();
+                        mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
+                    } else {
+                        closeScanner();
+                        Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
+                    isOpened = false;
+                    closeScanner();
+                    Toast.makeText(this, "暂停扫描", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -151,8 +191,12 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 showInfoDialog();
                 break;
             case R.id.menu_setting:
-                //弹窗设置页面
-                showSettingDialog();
+                //弹窗设置页面,相机不开启不允许设置
+                if (isOpened) {
+                    showSettingDialog();
+                } else {
+                    showToast("请先开启扫描");
+                }
                 break;
             default:
                 break;
@@ -185,12 +229,13 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
      * 设置界面
      */
     private void showSettingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置");
 
         final View dialogView = getLayoutInflater().inflate(R.layout.setting_layout, null);
         builder.setView(dialogView);
-
+        final EditText etValue = dialogView.findViewById(R.id.et_value1);
+        etValue.setText(String.valueOf(hsiScanner.getParams(SymbologyID.EXPOSURE))); //曝光时间
         final CheckBox mCbCodabar = dialogView.findViewById(R.id.cb_codabar);
         final CheckBox mCbCode11 = dialogView.findViewById(R.id.cb_code11);
         final CheckBox mCbCode128 = dialogView.findViewById(R.id.cb_code128);
@@ -230,29 +275,79 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                //曝光时间
+                hsiScanner.setParams(SymbologyID.EXPOSURE, TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim()));
+                editor.putInt(SymbologyID.EXPOSURE + "", TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim())).apply();
+
+                //参数设置
                 hsiScanner.setParams(SymbologyID.CODABAR, mCbCodabar.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.CODE11, mCbCode11.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.CODE128, mCbCode128.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.CODE39, mCbCode39.isChecked() ? 1 : 0);
+                editor.putInt(SymbologyID.CODABAR + "", mCbCodabar.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.CODE11 + "", mCbCode11.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.CODE128 + "", mCbCode128.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.CODE39 + "", mCbCode39.isChecked() ? 1 : 0).apply();
 
                 hsiScanner.setParams(SymbologyID.CODE93, mCbCode93.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.DATAMATRIX, mCbDatamatrix.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.EAN8, mCbEan8.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.EAN13, mCbEan13.isChecked() ? 1 : 0);
+                editor.putInt(SymbologyID.CODE93 + "", mCbCode93.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.DATAMATRIX + "", mCbDatamatrix.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.EAN8 + "", mCbEan8.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.EAN13 + "", mCbEan13.isChecked() ? 1 : 0).apply();
 
                 hsiScanner.setParams(SymbologyID.INT25, mCbInt125.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.MAXICODE, mCbMaxicode.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.MICROPDF, mCbMicropdf.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.PDF417, mCbPdf417.isChecked() ? 1 : 0);
+                editor.putInt(SymbologyID.INT25 + "", mCbInt125.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.MAXICODE + "", mCbMaxicode.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.MICROPDF + "", mCbMicropdf.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.PDF417 + "", mCbPdf417.isChecked() ? 1 : 0).apply();
 
                 hsiScanner.setParams(SymbologyID.QR, mCbQr.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.UPCA, mCbUpca.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.UPCE0, mCbUpce0.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.GS1_128, mCbGsi128.isChecked() ? 1 : 0);
+                editor.putInt(SymbologyID.QR + "", mCbQr.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.UPCA + "", mCbUpca.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.UPCE0 + "", mCbUpce0.isChecked() ? 1 : 0).apply();
+                editor.putInt(SymbologyID.GS1_128 + "", mCbGsi128.isChecked() ? 1 : 0).apply();
             }
         });
         builder.setPositiveButtonIcon(getResources().getDrawable(R.drawable.ic_ok));
         builder.show();
+    }
+
+    /**
+     * 读取sp，设置参数
+     */
+    private void setScanParams() {
+        hsiScanner.setParams(SymbologyID.CODABAR, sharedPreferences.getInt(SymbologyID.CODABAR + "", 0));
+        hsiScanner.setParams(SymbologyID.CODE11, sharedPreferences.getInt(SymbologyID.CODE11 + "", 0));
+        hsiScanner.setParams(SymbologyID.CODE128, sharedPreferences.getInt(SymbologyID.CODE128 + "", 0));
+        hsiScanner.setParams(SymbologyID.CODE39, sharedPreferences.getInt(SymbologyID.CODE39 + "", 0));
+
+        hsiScanner.setParams(SymbologyID.CODE93, sharedPreferences.getInt(SymbologyID.CODE93 + "", 0));
+        hsiScanner.setParams(SymbologyID.DATAMATRIX, sharedPreferences.getInt(SymbologyID.DATAMATRIX + "", 0));
+        hsiScanner.setParams(SymbologyID.EAN8, sharedPreferences.getInt(SymbologyID.EAN8 + "", 0));
+        hsiScanner.setParams(SymbologyID.EAN13, sharedPreferences.getInt(SymbologyID.EAN13 + "", 0));
+
+        hsiScanner.setParams(SymbologyID.INT25, sharedPreferences.getInt(SymbologyID.INT25 + "", 0));
+        hsiScanner.setParams(SymbologyID.MAXICODE, sharedPreferences.getInt(SymbologyID.MAXICODE + "", 0));
+        hsiScanner.setParams(SymbologyID.MICROPDF, sharedPreferences.getInt(SymbologyID.MICROPDF + "", 0));
+        hsiScanner.setParams(SymbologyID.PDF417, sharedPreferences.getInt(SymbologyID.PDF417 + "", 0));
+
+        hsiScanner.setParams(SymbologyID.QR, sharedPreferences.getInt(SymbologyID.QR + "", 0));
+        hsiScanner.setParams(SymbologyID.UPCA, sharedPreferences.getInt(SymbologyID.UPCA + "", 0));
+        hsiScanner.setParams(SymbologyID.UPCE0, sharedPreferences.getInt(SymbologyID.UPCE0 + "", 0));
+        hsiScanner.setParams(SymbologyID.GS1_128, sharedPreferences.getInt(SymbologyID.GS1_128 + "", 0));
+
+        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 0);//设置保存图像
+        hsiScanner.setParams(SymbologyID.EXPOSURE, sharedPreferences.getInt(SymbologyID.EXPOSURE + "", EXPOSURE));//设置曝光值
     }
 
     /**
@@ -264,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     public void onComplete(CommodityInfo commodityInfo) {
         if (commodityInfo != null) {
             //条码集合
-            String[] codeList = commodityInfo.getbarcodeArr();
+            String[] codeList = commodityInfo.getBarcodeArr();
             SeuicLog.d("codeList长度:" + codeList.length);
             StringBuilder sb = new StringBuilder();
             for (String code : codeList) {
@@ -322,35 +417,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 codeListAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_play:
-                if (!isOpened) {
-                    //打开和设置参数
-                    boolean startSuccess = hsiScanner.open();
-                    if (startSuccess) {
-                        Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
-                        mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
-                        isOpened = true;
-                    } else {
-                        isOpened = false;
-                        closeScanner();
-                        Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
-                    isOpened = false;
-                    closeScanner();
-                    Toast.makeText(this, "暂停扫描", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            default:
-                break;
-        }
     }
 
     class CodeListAdapter extends BaseQuickAdapter<CodeItem, BaseViewHolder> {

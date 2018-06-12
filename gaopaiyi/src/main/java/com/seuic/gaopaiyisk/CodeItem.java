@@ -13,16 +13,16 @@ class CodeItem {
     }
 
     public static void main(String[] args) {
-//        String[] codeList = new String[]{"1242","12","dsag","dage"};
+        String[] codeList1 = new String[]{"1242","12","dsag","dage"};
         String[] codeList = new String[]{"1242"};
 
         StringBuilder sb = new StringBuilder();
-        for (String code : codeList) {
+        for (String code : codeList1) {
 
             sb.append(code);
-            sb.append("\n");
+            sb.append("\r\n");
         }
 
-        System.out.println(sb.toString());
+        System.out.println(sb.toString().trim());
     }
 }

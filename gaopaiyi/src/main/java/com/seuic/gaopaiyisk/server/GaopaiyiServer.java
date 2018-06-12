@@ -16,7 +16,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 /**
- * 高拍仪服务端，像客户端持续发送条码信息
+ * 高拍仪服务端，往客户端持续发送条码信息
  */
 public class GaopaiyiServer {
     private static String TAG = GaopaiyiServer.class.getSimpleName();
@@ -56,7 +56,7 @@ public class GaopaiyiServer {
             try {
                 serverSocket = new ServerSocket(socketServerPORT);
 
-                while (true) {
+                while (!activity.isFinishing()) {
                     Socket socket = serverSocket.accept();
                     count++;
                     message += "#" + count + " from "
@@ -103,7 +103,7 @@ public class GaopaiyiServer {
                 outputStream = hostThreadSocket.getOutputStream();
                 // TODO: 2018/6/11 这里可以将  printStream加入集合中，然后可以遍历发送给多个客户端
                 printStream = new PrintStream(outputStream);
-                printStream.print(msgReply);
+                //printStream.print(msgReply);
                 //printStream.close();
                 showToast("客户端已连接");
                 message += "replayed: " + msgReply + "\n";
