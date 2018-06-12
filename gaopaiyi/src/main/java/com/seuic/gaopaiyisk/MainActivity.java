@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     private TextView tvWeight;
     private boolean isOpened; //是否已经开启
     private List<CodeItem> data;
+    private List<String> barcodeList;
     private RecyclerView codeListRV;
     private CodeListAdapter codeListAdapter;
     private SharedPreferences sharedPreferences;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
 
     private void initRV() {
         data = new ArrayList<>();
+        barcodeList = new ArrayList<>();
         codeListAdapter = new CodeListAdapter(data);
         codeListRV.setLayoutManager(new LinearLayoutManager(this));
         codeListRV.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -363,14 +365,14 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             SeuicLog.d("codeList长度:" + codeList.length);
             StringBuilder sb = new StringBuilder();
             for (String code : codeList) {
-
                 sb.append(code);
                 sb.append("\n");
             }
             String barcode = sb.toString().trim();
             //重量
-            String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "" : commodityInfo.getWeight();
+            String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
+
 
             //更新UI数据
             refreshData(barcode, weight);
@@ -407,21 +409,23 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
      * @param weight  weight
      */
     private void refreshData(String barcode, final String weight) {
+       /* if (barcodeList.contains(barcode)) return; //条码重复存在
+        barcodeList.add(barcode);*/
         data.add(new CodeItem(barcode, weight));
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 tvCount.setText(String.valueOf(data.size())); //数量
                 tvWeight.setText(weight); //数量
                 codeListAdapter.notifyDataSetChanged();
+                codeListRV.smoothScrollToPosition(data.size() - 1);
             }
         });
     }
 
     class CodeListAdapter extends BaseQuickAdapter<CodeItem, BaseViewHolder> {
 
-        public CodeListAdapter(@Nullable List<CodeItem> data) {
+        CodeListAdapter(@Nullable List<CodeItem> data) {
             super(data);
             mLayoutResId = R.layout.codelist_item;
         }
