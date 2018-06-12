@@ -1,6 +1,7 @@
 package com.seuic.gaopaiyisk.server;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.seuic.gaopaiyisk.MainActivity;
 
@@ -23,6 +24,7 @@ public class GaopaiyiServer {
     private ServerSocket serverSocket;
     private String message = "";
     private static final int socketServerPORT = 9999;
+    public Socket hostThreadSocket;
 
     public GaopaiyiServer(MainActivity activity) {
         this.activity = activity;
@@ -85,8 +87,6 @@ public class GaopaiyiServer {
     public PrintStream printStream;
 
     private class SocketServerReplyThread extends Thread {
-
-        private Socket hostThreadSocket;
         int cnt;
 
         SocketServerReplyThread(Socket socket, int c) {
@@ -105,15 +105,29 @@ public class GaopaiyiServer {
                 printStream = new PrintStream(outputStream);
                 printStream.print(msgReply);
                 //printStream.close();
-
+                showToast("客户端已连接");
                 message += "replayed: " + msgReply + "\n";
 
             } catch (IOException e) {
+                showToast("客户端已断开");
                 Log.e(TAG, "SocketServerReply 出错 " + e.toString());
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private void showToast(final String msg) {
+        try {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getIpAddress() {

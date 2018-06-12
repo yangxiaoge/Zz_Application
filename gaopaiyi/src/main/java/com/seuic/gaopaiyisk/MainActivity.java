@@ -284,11 +284,24 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 try {
                     server.printStream.println(sb.toString().trim());
                 } catch (Exception e) {
+                    Log.e(TAG, "发送数据给客户端异常: " + e.toString());
                     e.printStackTrace();
-                    Log.e(TAG, "发送数据给客户端: " + sb.toString().trim());
                 }
             }
 
+        }
+    }
+
+    private void showToast(final String msg) {
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -318,11 +331,11 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
                 if (!isOpened) {
                     //打开和设置参数
                     boolean startSuccess = hsiScanner.open();
-                    if (startSuccess){
+                    if (startSuccess) {
                         Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
                         mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
                         isOpened = true;
-                    }else {
+                    } else {
                         isOpened = false;
                         closeScanner();
                         Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
