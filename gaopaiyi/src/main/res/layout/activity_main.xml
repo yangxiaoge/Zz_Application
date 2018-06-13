@@ -26,10 +26,10 @@
             android:orientation="horizontal">
 
             <View
-                android:visibility="gone"
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
-                android:background="#ff000000" />
+                android:background="#ff000000"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -50,10 +50,10 @@
                 android:textSize="24sp" />
 
             <View
-                android:visibility="gone"
                 android:layout_width="1dp"
                 android:layout_height="fill_parent"
-                android:background="#ff000000" />
+                android:background="#ff000000"
+                android:visibility="gone" />
         </LinearLayout>
         <!--横线-->
         <View
@@ -77,20 +77,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
             android:layout_marginTop="8dp"
-            android:gravity="center"
             android:orientation="horizontal">
-
             <!--重量显示-->
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:paddingLeft="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -99,29 +96,19 @@
                     android:textSize="24sp" />
 
                 <TextView
+                    android:paddingLeft="5dp"
                     android:id="@+id/tv_weight"
-                    android:layout_width="100dp"
-                    android:minWidth="100dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
                     android:background="@drawable/border_line_while"
-                    android:textSize="24sp" />
+                    android:gravity="center_vertical" />
             </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/cb_test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="4dp"
-                android:checked="false"
-                android:text="TEST"
-                android:theme="@style/My_CheckBox"
-                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/iv_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
