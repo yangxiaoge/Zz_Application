@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         hsiScanner.setParams(SymbologyID.UPCE0, sharedPreferences.getInt(SymbologyID.UPCE0 + "", 0));
         hsiScanner.setParams(SymbologyID.GS1_128, sharedPreferences.getInt(SymbologyID.GS1_128 + "", 0));
 
-        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 0);//设置保存图像
+        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 0);//设置保存图像,设置成0，如果是1没次扫码都会保存图片，会很慢
         hsiScanner.setParams(SymbologyID.EXPOSURE, sharedPreferences.getInt(SymbologyID.EXPOSURE + "", EXPOSURE));//设置曝光值
     }
 
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             //发给条码给客户端
             if (server.printStream != null) {
                 try {
-                    server.printStream.println(sb.toString().trim());
+                    server.printStream.println(sb.toString().trim() + "$"); //末尾传“$”给客户端识别
                 } catch (Exception e) {
                     Log.e(TAG, "发送数据给客户端异常: " + e.toString());
                     e.printStackTrace();
@@ -409,14 +409,14 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
      * @param weight  weight
      */
     private void refreshData(String barcode, final String weight) {
-       /* if (barcodeList.contains(barcode)) return; //条码重复存在
-        barcodeList.add(barcode);*/
+        if (barcodeList.contains(barcode)) return; //条码重复存在
+        barcodeList.add(barcode);
         data.add(new CodeItem(barcode, weight));
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvCount.setText(String.valueOf(data.size())); //数量
-                tvWeight.setText(weight); //数量
+                tvCount.setText(String.format("数量:%s", data.size())); //数量
+                tvWeight.setText(weight); //重量
                 codeListAdapter.notifyDataSetChanged();
                 codeListRV.smoothScrollToPosition(data.size() - 1);
             }

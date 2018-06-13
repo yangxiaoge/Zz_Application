@@ -12,7 +12,7 @@ class CodeItem {
         this.weight = weight;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         String[] codeList1 = new String[]{"1242","12","dsag","dage"};
         String[] codeList = new String[]{"1242"};
 
@@ -24,5 +24,13 @@ class CodeItem {
         }
 
         System.out.println(sb.toString().trim());
-    }
+
+        String format = String.format("数量:%s", 1111);
+
+        System.out.println(format);
+
+        String raw = "hello";
+        String str = String.format("%1$7s", raw);
+        System.out.println(str);
+    }*/
 }
