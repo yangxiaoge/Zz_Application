@@ -29,6 +29,7 @@ import com.fsa.decoder.SymbologyID;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
 import com.seuic.gaopaiyisk.server.GaopaiyiServer;
+import com.seuic.gaopaiyisk.util.WakeLockCtrl;
 import com.seuic.hsiscanner.HSIScanner;
 import com.seuic.utils.SeuicLog;
 
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             }
         }
 
+        //禁止自动休眠
+        WakeLockCtrl.lock(this);
     }
 
     @Override
@@ -120,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         Log.e(TAG, "onPause");
         //onPause中关闭
         closeScanner();
+        //释放自动休眠控制
+        WakeLockCtrl.release();
     }
 
     @Override
@@ -371,11 +376,11 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             String barcode = sb.toString().trim();
             //重量
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
-            SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //条码重复存在,重复条码不处理
             if (barcodeList.contains(barcode)) return;
             barcodeList.add(barcode);
+            SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
             refreshData(barcode, weight);
