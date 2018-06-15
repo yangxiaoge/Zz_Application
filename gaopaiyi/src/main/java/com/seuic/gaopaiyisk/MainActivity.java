@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.fsa.decoder.SymbologyID;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
 import com.seuic.gaopaiyisk.server.GaopaiyiServer;
@@ -35,8 +36,12 @@ import com.seuic.utils.SeuicLog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements CompleteCallback, View.OnClickListener {
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+
+public class MainActivity extends AppCompatActivity implements CompleteCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
     private SurfaceView mSurfaceView;
     private HSIScanner hsiScanner;
@@ -94,7 +99,17 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         tvCount = findViewById(R.id.tv_count);
         tvWeight = findViewById(R.id.tv_weight);
         mIvPlay = findViewById(R.id.iv_play);
-        mIvPlay.setOnClickListener(this);
+
+        //防止多次点击
+        RxView.clicks(mIvPlay)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        handlePlayClick();
+                    }
+                });
     }
 
     @Override
@@ -135,35 +150,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
         HSIScanner.destroyInstance();
         //server服务关闭
         server.onDestroy();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_play:
-                if (!isOpened) {
-                    //打开和设置参数
-                    isOpened = hsiScanner.open(1280, 720);
-                    if (isOpened) {
-                        Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
-                        //设置参数
-                        setScanParams();
-                        mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
-                    } else {
-                        closeScanner();
-                        Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
-                    isOpened = false;
-                    closeScanner();
-                    Toast.makeText(this, "暂停扫描", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            default:
-                break;
-        }
     }
 
     /**
@@ -330,6 +316,30 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
     }
 
     /**
+     * 处理开关逻辑
+     */
+    private void handlePlayClick() {
+        if (!isOpened) {
+            //打开和设置参数
+            isOpened = hsiScanner.open(1280, 720);
+            if (isOpened) {
+                Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
+                //设置参数
+                setScanParams();
+                mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
+            } else {
+                closeScanner();
+                Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
+            isOpened = false;
+            closeScanner();
+            Toast.makeText(this, "暂停扫描", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
      * 读取sp，设置参数
      */
     private void setScanParams() {
@@ -378,8 +388,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback,
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
             //条码重复存在,重复条码不处理
-            if (barcodeList.contains(barcode)) return;
-            barcodeList.add(barcode);
+            /*if (barcodeList.contains(barcode)) return;
+            barcodeList.add(barcode);*/
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
