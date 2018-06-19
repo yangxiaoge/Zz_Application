@@ -388,16 +388,18 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
             //条码重复存在,重复条码不处理
-            /*if (barcodeList.contains(barcode)) return;
-            barcodeList.add(barcode);*/
+            if (barcodeList.contains(barcode)) return;
+            barcodeList.add(barcode);
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
             refreshData(barcode, weight);
-            //发给条码给客户端
+
+            //发给条码给客户端w
+            String s = sb.toString().trim() + "$" + weight;
+            SeuicLog.d("barcode & weight = " + s);
             if (server.printStream != null) {
                 try {
-                    String s = sb.toString().trim() + "$";
                     server.printStream.print(s); //末尾传“$”给客户端识别
                 } catch (Exception e) {
                     Log.e(TAG, "发送数据给客户端异常: " + e.toString());
