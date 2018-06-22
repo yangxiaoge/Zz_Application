@@ -30,6 +30,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
 import com.seuic.gaopaiyisk.server.GaopaiyiServer;
+import com.seuic.gaopaiyisk.util.SoundUtils;
 import com.seuic.gaopaiyisk.util.WakeLockCtrl;
 import com.seuic.hsiscanner.HSIScanner;
 import com.seuic.utils.SeuicLog;
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     //相机分辨率
     private static int WIDTH = 2112;
     private static int HEIGHT = 1568;
+//    private static int WIDTH = 1280;
+//    private static int HEIGHT = 720;
+    private SoundUtils soundUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         initView();
         initData();
         initScanner();
+
+        soundUtils = new SoundUtils(this);
+        soundUtils.init();
     }
 
     GaopaiyiServer server;
@@ -152,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         Log.e(TAG, "onDestroy");
         //onDestory中释放对象
         HSIScanner.destroyInstance();
-        //server服务关闭
+        //释放声音播放
+        soundUtils.release();
         server.onDestroy();
     }
 
@@ -393,12 +401,14 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
             //条码重复存在,重复条码不处理(release版本开启)
-            if (!BuildConfig.DEBUG){
+            if (!BuildConfig.DEBUG) {
                 if (barcodeList.contains(barcode)) return;
                 barcodeList.add(barcode);
             }
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
+            //解码成功后，播放雨滴声音
+            soundUtils.playSound(SoundUtils.START_SOUND_ID_RAINBOW,1);
             //更新UI数据
             refreshData(barcode, weight);
 
