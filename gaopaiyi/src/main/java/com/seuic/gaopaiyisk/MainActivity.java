@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     private SharedPreferences sharedPreferences;
     private String SPNAME = "gaopaiyisp"; //SP名称
     private static int EXPOSURE = 1500; //默认的曝光时间
+    //相机分辨率
+    private static int WIDTH = 2112;
+    private static int HEIGHT = 1568;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +120,9 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         super.onResume();
         Log.e(TAG, "onResume");
 
-        if (hsiScanner != null) {
-            isOpened = hsiScanner.open(1280, 720);
+        //不默认打开扫描解码
+        /*if (hsiScanner != null) {
+            isOpened = hsiScanner.open(WIDTH, HEIGHT);
             if (isOpened) {
                 hsiScanner.setCompleteCallback(this);
 
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
                 setScanParams();
                 mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
             }
-        }
+        }*/
 
         //禁止自动休眠
         WakeLockCtrl.lock(this);
@@ -157,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
      */
     private void initScanner() {
         hsiScanner = HSIScanner.getInstance(this, mSurfaceView);
-        hsiScanner.setCompleteCallback(this);
     }
 
     /**
@@ -321,9 +324,11 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     private void handlePlayClick() {
         if (!isOpened) {
             //打开和设置参数
-            isOpened = hsiScanner.open(1280, 720);
+            isOpened = hsiScanner.open(WIDTH, HEIGHT);
             if (isOpened) {
                 Toast.makeText(this, "开始扫描", Toast.LENGTH_SHORT).show();
+                //解码回调
+                hsiScanner.setCompleteCallback(this);
                 //设置参数
                 setScanParams();
                 mIvPlay.setImageResource(R.drawable.ic_pause_circle_outline_black_64dp);
@@ -363,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         hsiScanner.setParams(SymbologyID.UPCE0, sharedPreferences.getInt(SymbologyID.UPCE0 + "", 0));
         hsiScanner.setParams(SymbologyID.GS1_128, sharedPreferences.getInt(SymbologyID.GS1_128 + "", 0));
 
-        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 0);//设置保存图像,设置成0，如果是1没次扫码都会保存图片，会很慢
+        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 1);//设置保存图像,设置成0，如果是1没次扫码都会保存图片，会很慢
         hsiScanner.setParams(SymbologyID.EXPOSURE, sharedPreferences.getInt(SymbologyID.EXPOSURE + "", EXPOSURE));//设置曝光值
     }
 
@@ -387,9 +392,11 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             //重量
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
-            //条码重复存在,重复条码不处理
-            if (barcodeList.contains(barcode)) return;
-            barcodeList.add(barcode);
+            //条码重复存在,重复条码不处理(release版本开启)
+            if (!BuildConfig.DEBUG){
+                if (barcodeList.contains(barcode)) return;
+                barcodeList.add(barcode);
+            }
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //更新UI数据
