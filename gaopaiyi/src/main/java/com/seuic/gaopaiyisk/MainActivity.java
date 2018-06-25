@@ -153,8 +153,11 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     protected void onPause() {
         super.onPause();
         Log.e(TAG, "onPause");
-        //onPause中关闭
+        //onPause中关闭扫描
+        mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
+        isOpened = false;
         closeScanner();
+
         //释放自动休眠控制
         WakeLockCtrl.release();
     }
