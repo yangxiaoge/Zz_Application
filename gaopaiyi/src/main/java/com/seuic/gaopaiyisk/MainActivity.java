@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.fsa.decoder.SymbologyID;
+import com.google.common.base.Strings;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
@@ -414,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             }
             String barcode = sb.toString().trim();
             //重量
-            String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
+            String weight = Strings.isNullOrEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
             //条码重复存在,重复条码不处理(release版本会过滤重复条码)
             if (!BuildConfig.DEBUG) {

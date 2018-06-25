@@ -47,4 +47,7 @@ dependencies {
     //rxbingding
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
     implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
+
+    // Guava java 类封装
+    implementation 'com.google.guava:guava:21.0'
 }
