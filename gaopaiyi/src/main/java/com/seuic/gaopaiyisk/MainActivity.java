@@ -1,5 +1,6 @@
 package com.seuic.gaopaiyisk;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -30,6 +31,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
 import com.seuic.gaopaiyisk.server.GaopaiyiServer;
+import com.seuic.gaopaiyisk.util.AppScreenMgr;
 import com.seuic.gaopaiyisk.util.SoundUtils;
 import com.seuic.gaopaiyisk.util.WakeLockCtrl;
 import com.seuic.hsiscanner.HSIScanner;
@@ -60,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     //相机分辨率
     private static int WIDTH = 2112;
     private static int HEIGHT = 1568;
-//    private static int WIDTH = 1280;
-//    private static int HEIGHT = 720;
     private SoundUtils soundUtils;
 
     @Override
@@ -74,11 +74,13 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         initData();
         initScanner();
 
+        //声音工具
         soundUtils = new SoundUtils(this);
         soundUtils.init();
     }
 
-    GaopaiyiServer server;
+    //高拍仪Socket服务器
+    private GaopaiyiServer server;
 
     /**
      * 初始化server服务器
@@ -91,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
      * 初始化数据
      */
     private void initData() {
+        WIDTH = AppScreenMgr.getScreenWidth(this);
+        HEIGHT = AppScreenMgr.getScreenHeight(this);
+        SeuicLog.d(String.format("WIDTH * HEIGHT = %s * %s", WIDTH, HEIGHT));
         initRV();
     }
 
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         codeListRV.setAdapter(codeListAdapter);
     }
 
+    @SuppressLint("CheckResult")
     private void initView() {
         mSurfaceView = findViewById(R.id.surfaceview);
         codeListRV = findViewById(R.id.rv_list);
@@ -112,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
 
         //防止多次点击
         RxView.clicks(mIvPlay)
-                .throttleFirst(1, TimeUnit.SECONDS)
+                .throttleFirst(600, TimeUnit.MILLISECONDS) //600毫秒
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Object>() {
                     @Override
@@ -239,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         final View dialogView = getLayoutInflater().inflate(R.layout.setting_layout, null);
         builder.setView(dialogView);
         final EditText etValue = dialogView.findViewById(R.id.et_value1);
-        etValue.setText(String.valueOf(hsiScanner.getParams(SymbologyID.EXPOSURE))); //曝光时间
+        //etValue.setText(String.valueOf(hsiScanner.getParams(SymbologyID.EXPOSURE))); //曝光时间
         final CheckBox mCbCodabar = dialogView.findViewById(R.id.cb_codabar);
         final CheckBox mCbCode11 = dialogView.findViewById(R.id.cb_code11);
         final CheckBox mCbCode128 = dialogView.findViewById(R.id.cb_code128);
@@ -281,9 +287,10 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 //曝光时间
-                hsiScanner.setParams(SymbologyID.EXPOSURE, TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim()));
-                editor.putInt(SymbologyID.EXPOSURE + "", TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim())).apply();
-
+                if (!TextUtils.isEmpty(etValue.getText().toString().trim())) {
+                    hsiScanner.setParams(SymbologyID.EXPOSURE, TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim()));
+                    editor.putInt(SymbologyID.EXPOSURE + "", TextUtils.isEmpty(etValue.getText().toString().trim()) ? EXPOSURE : Integer.parseInt(etValue.getText().toString().trim())).apply();
+                }
                 //参数设置
                 hsiScanner.setParams(SymbologyID.CODABAR, mCbCodabar.isChecked() ? 1 : 0);
                 hsiScanner.setParams(SymbologyID.CODE11, mCbCode11.isChecked() ? 1 : 0);
@@ -327,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     }
 
     /**
-     * 处理开关逻辑
+     * 处理开关点击事件
      */
     private void handlePlayClick() {
         if (!isOpened) {
@@ -345,6 +352,12 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
                 Toast.makeText(this, "开启失败", Toast.LENGTH_SHORT).show();
             }
         } else {
+            //清楚数据
+            data.clear();
+            codeListAdapter.notifyDataSetChanged();
+            tvCount.setText(String.format("数量:%s", "")); //数量
+            tvWeight.setText("");
+
             mIvPlay.setImageResource(R.drawable.ic_play_circle_outline_black_64dp);
             isOpened = false;
             closeScanner();
@@ -376,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
         hsiScanner.setParams(SymbologyID.UPCE0, sharedPreferences.getInt(SymbologyID.UPCE0 + "", 0));
         hsiScanner.setParams(SymbologyID.GS1_128, sharedPreferences.getInt(SymbologyID.GS1_128 + "", 0));
 
-        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, 1);//设置保存图像,设置成0，如果是1没次扫码都会保存图片，会很慢
+        hsiScanner.setParams(SymbologyID.SAVE_IMAGE, BuildConfig.DEBUG ? 0 : 1);//（debug设置成0，release设置成1）设置保存图像,设置成0，如果是每次次扫码都会保存图片，会很慢
         hsiScanner.setParams(SymbologyID.EXPOSURE, sharedPreferences.getInt(SymbologyID.EXPOSURE + "", EXPOSURE));//设置曝光值
     }
 
@@ -400,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             //重量
             String weight = TextUtils.isEmpty(commodityInfo.getWeight()) ? "无重量" : commodityInfo.getWeight();
 
-            //条码重复存在,重复条码不处理(release版本开启)
+            //条码重复存在,重复条码不处理(release版本会过滤重复条码)
             if (!BuildConfig.DEBUG) {
                 if (barcodeList.contains(barcode)) return;
                 barcodeList.add(barcode);
@@ -408,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
             SeuicLog.d("barcode:" + barcode + " weight:" + weight);
 
             //解码成功后，播放雨滴声音
-            soundUtils.playSound(SoundUtils.START_SOUND_ID_RAINBOW,1);
+            soundUtils.playSound(SoundUtils.START_SOUND_ID_RAINBOW, 1);
             //更新UI数据
             refreshData(barcode, weight);
 
