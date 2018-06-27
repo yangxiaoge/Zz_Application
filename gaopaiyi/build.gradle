@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.seuic.gaopaiyisk.multiclient"
+        applicationId "com.seuic.gaopaiyisk"
         minSdkVersion 18
         targetSdkVersion 27
         versionCode 1

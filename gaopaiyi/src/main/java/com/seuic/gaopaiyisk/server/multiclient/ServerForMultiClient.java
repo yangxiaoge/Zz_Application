@@ -212,4 +212,8 @@ public class ServerForMultiClient implements MainActivityMultiClient.SendData2Cl
         }
         return ip;
     }
+
+    public int getPort() {
+        return PORT;
+    }
 }

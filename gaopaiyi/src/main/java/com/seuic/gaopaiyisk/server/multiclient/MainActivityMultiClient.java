@@ -239,7 +239,7 @@ public class MainActivityMultiClient extends AppCompatActivity implements Comple
         builder.setTitle("版本信息");
         try {
             builder.setMessage("当前版本为：" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName
-                    + "\n\n" + "本机ip为：" + csServer.getIpAddress() + "\n" + "本机port为：" + "9999");
+                    + "\n\n" + "本机ip为：" + csServer.getIpAddress() + "\n" + "本机port为：" + csServer.getPort());
         } catch (PackageManager.NameNotFoundException e) {
             builder.setMessage("");
         }
