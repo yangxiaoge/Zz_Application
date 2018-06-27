@@ -1,7 +1,5 @@
 package com.seuic.gaopaiyisk.server.multiclient;
 
-import com.seuic.gaopaiyisk.MainActivity;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,7 +23,7 @@ import java.util.concurrent.Executors;
  * 可以连接多个client,代码可以参考
  * @author Devin Chen
  */
-public class ServerForMultiClient  implements MainActivity.SendData2ClientCallback  {
+public class ServerForMultiClient  implements MainActivityMultiClient.SendData2ClientCallback  {
     private static final int PORT = 9999;
     public List<Socket> mClientList = new ArrayList<>();
     private ServerSocket server = null;
@@ -39,7 +37,7 @@ public class ServerForMultiClient  implements MainActivity.SendData2ClientCallba
 
     }
 
-    public ServerForMultiClient(MainActivity context) {
+    public ServerForMultiClient(MainActivityMultiClient context) {
         context.initCallback(this);
     }
 
@@ -155,7 +153,7 @@ public class ServerForMultiClient  implements MainActivity.SendData2ClientCallba
                 out = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(mSocket.getOutputStream())),
                         true);// 创建输出流对象
-                out.println(msg);// 转发
+                out.print(msg);// 转发
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());// 异常输出
