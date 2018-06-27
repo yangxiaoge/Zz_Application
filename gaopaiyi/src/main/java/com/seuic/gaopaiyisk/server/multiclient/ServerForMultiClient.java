@@ -21,9 +21,10 @@ import java.util.concurrent.Executors;
  * Tcp通信服务器
  * https://blog.csdn.net/qq_17007915/article/details/77980633
  * 可以连接多个client,代码可以参考
+ *
  * @author Devin Chen
  */
-public class ServerForMultiClient  implements MainActivityMultiClient.SendData2ClientCallback  {
+public class ServerForMultiClient implements MainActivityMultiClient.SendData2ClientCallback {
     private static final int PORT = 9999;
     public List<Socket> mClientList = new ArrayList<>();
     private ServerSocket server = null;
@@ -45,7 +46,7 @@ public class ServerForMultiClient  implements MainActivityMultiClient.SendData2C
     /**
      * 任务是启动服务器，等待客户端连接
      */
-    public void initServer(){
+    public void initServer() {
         try {
             server = new ServerSocket(PORT);
             mExecutors = Executors.newCachedThreadPool(); // 创建线程池
@@ -153,7 +154,7 @@ public class ServerForMultiClient  implements MainActivityMultiClient.SendData2C
                 out = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(mSocket.getOutputStream())),
                         true);// 创建输出流对象
-                out.print(msg);// 转发
+                out.println(msg);// 转发
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println(e.getMessage());// 异常输出
