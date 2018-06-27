@@ -1,4 +1,4 @@
-1,onCreate»ñÈ¡¶ÔÏóºÍÉèÖÃ»Øµ÷
+1,onCreateè·å–å¯¹è±¡å’Œè®¾ç½®å›è°ƒ
 hsiScanner = HSIScanner.getInstance(this, surfaceView);
 hsiScanner.setCompleteCallback(this);
 
@@ -11,10 +11,10 @@ hsiScanner.setCompleteCallback(this);
 			}
 		}
 	}
-2,onResumeÖĞ´ò¿ªºÍÉèÖÃ²ÎÊı
+2,onResumeä¸­æ‰“å¼€å’Œè®¾ç½®å‚æ•°
 hsiScanner.open();
-hsiScanner.setParams(SymbologyID.CODE128, 1); // 1£¬±íÊ¾´ò¿ª¸ÃÌõÂë£¬0 ±íÊ¾¹Ø±Õ£¨setParams±ØĞëÔÚopenµÄÖ®ºó²ÅÄÜÉèÖÃ£©
-3,onPauseÖĞ¹Ø±Õ
+hsiScanner.setParams(SymbologyID.CODE128, 1); // 1ï¼Œè¡¨ç¤ºæ‰“å¼€è¯¥æ¡ç ï¼Œ0 è¡¨ç¤ºå…³é—­ï¼ˆsetParamså¿…é¡»åœ¨opençš„ä¹‹åæ‰èƒ½è®¾ç½®ï¼‰
+3,onPauseä¸­å…³é—­
 hsiScanner.close();
-onDestoryÖĞÊÍ·Å¶ÔÏó
+onDestoryä¸­é‡Šæ”¾å¯¹è±¡
 HSIScanner.destroyInstance();

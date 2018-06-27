@@ -32,7 +32,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.seuic.bean.CommodityInfo;
 import com.seuic.callback.CompleteCallback;
 import com.seuic.gaopaiyisk.server.GaopaiyiServer;
-import com.seuic.gaopaiyisk.util.AppScreenMgr;
 import com.seuic.gaopaiyisk.util.SoundUtils;
 import com.seuic.gaopaiyisk.util.WakeLockCtrl;
 import com.seuic.hsiscanner.HSIScanner;
@@ -61,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
     private String SPNAME = "gaopaiyisp"; //SP名称
     private static int EXPOSURE = 1500; //默认的曝光时间
     //相机分辨率
-    private static int WIDTH = 2112;
-    private static int HEIGHT = 1568;
+//    private static int WIDTH = 2112;
+//    private static int HEIGHT = 1568;
+    private static int WIDTH = 1280;
+    private static int HEIGHT = 720;
     private SoundUtils soundUtils;
 
     @Override
@@ -94,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements CompleteCallback 
      * 初始化数据
      */
     private void initData() {
-        WIDTH = AppScreenMgr.getScreenWidth(this);
-        HEIGHT = AppScreenMgr.getScreenHeight(this);
+//        WIDTH = AppScreenMgr.getScreenWidth(this);
+//        HEIGHT = AppScreenMgr.getScreenHeight(this);
         SeuicLog.d(String.format("WIDTH * HEIGHT = %s * %s", WIDTH, HEIGHT));
         initRV();
     }
