@@ -22,6 +22,10 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+        // 阿里云仓库
+        maven {
+            url "http://maven.aliyun.com/nexus/content/repositories/releases"
+        }
     }
 }
 

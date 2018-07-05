@@ -1,2 +1,2 @@
-include ':webdialog', ':multirecycleitem', ':mykotlin', ':hencoder1-1',':greendaodemo', ':custsignview', ':gaopaiyi', ':testgaopaiyi'
+include ':webdialog', ':multirecycleitem', ':mykotlin', ':hencoder1-1',':greendaodemo', ':custsignview', ':gaopaiyi', ':alisophix'
 //include ':gaopaiyi'

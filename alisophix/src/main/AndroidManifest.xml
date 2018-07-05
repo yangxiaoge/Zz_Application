@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yjn.alisophix">
+
+    <!-- 网络权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 外部存储读权限，调试工具加载本地补丁需要 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".SophixStubApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- 以下为阿里云第三代 sopFix 热修复 -->
+        <meta-data
+            android:name="com.taobao.android.hotfix.IDSECRET"
+            android:value="24953119-1" />
+        <meta-data
+            android:name="com.taobao.android.hotfix.APPSECRET"
+            android:value="077c7a496bdc22de542312a737159091" />
+        <meta-data
+            android:name="com.taobao.android.hotfix.RSASECRET"
+            android:value="MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCJdDemZmSjwG4gGkbQeiqgKBhr7ke0HN38JNkq3rNmifnMaiDn89VYWFyRRYHiVymYUxWMimW2WqaLzWGe6D45g09tUPLJ47aeVaUdzXXEaYY4OQtmWeUon55Xd+a6VUsq+c3tgsPUclnQYaFJqPrEIKARs8Vhe4CaBJjbyeY9RUv4oH14/7Qi1JrRtPuLnymUo8jBG7UBh3bn04XAEBM+Dzh3rke37Khkby7ZYBBdpP0J596Mf/CQZYOzmA/mVfbVTOMQmKXJOnGiWPpnCJib9h79JJRHO13iRQi3kBZa/LpsYhR2cUaA0ip5AgT615dw42ZkWt92C0x4tZanxoPJAgMBAAECggEBAIG0SvcYVAs5gDGG2h/LyAFNFI50UPEi9E4EL3EGqN8vf6pm0xpNupoc92yV3FRKz5NPg1wVFJmYvOPbMC0VFfKLeB29bv0XhbGvO5n90Q1ATkkrexhf56AHzxDWscBO0BmDk9B1vnjwVtQN7HZnoAoGh0VtD+pG8jlj8SIlSL+zBXAqLO3i6f3GtQ+mid/2gtp3jG6x3NzHyxNofFgV5Kz9m6bA+sh2ok7lo1ZHX4HufGZqpiifIIfiVkcJ14UTG8zXcwm0ilWJOa8s4pS9HK8jgQYxQhEcbrh4MQ0ZLPPJVCBiAmbhThdYbf8a6BGMHlBvniQWiwKeLBIXM5EkpUkCgYEA5GP3Qr/USY7RdIdZgGMjoMP92hrO1K/JkqA+GNUxlD0l1O7j3C8KbZ9+wCIGknmh+NVzDDpm5Zl7ESnvCfSjGZG9IwlQFKH93Owlim2eRsyrtwbD8MD99UoOIiCePI0FPMdG+sve3XMzPIHYmT6ZUIMMyuAT5ux8NX4dkVSekpMCgYEAmhIGlsdxipUiqBb2QxKwsQoYep/Zf+oASowSHFWA9peoUfkFOpcxSLra+u61m0r4sv/HqzRlKBx7qcui605n+cTvUSYsvZZUCfwCK0q56vcFhdW7SUesE6vmBgltlSqTiW1pT21wlgGhZCTooawU4b9CkL0LbC0GsA0eCXrDPbMCgYA07OF4q2FzZlAtc8wOz2qLL7/c0geKC+5nNxEMyiLCGmVw8acF+DSvcJ17wqbJPLyHIFeXxtTfcfCt6ozFPtao7zfoLZlMHrnofyS37m0WNQm50SyI1wBC3lVmHS7uEzPagMd3CNVtdeuyothhsrruiF/nh4O1KKoj70TEz9orVwKBgEh5xEm3ZmznfNcPfibNKvsNIbjFaz4l6J8oxvg3LKRTcSWme9Q0/UUWSR6TnjCAEv+5HMcnrZIx2+Zi2a/RQU4YWu+UgqVoiv3rY2XUECM8sodjpGdzZLoYOeuLEdaCocabBlgLxlN6Tt5aEmjDF0ueegS2OSJZB/VXJlMVQbTLAoGAc0kRGV2/L4zBCeIWguNgWhfJdbXMT39LjQE80bNQA0CC9hbH/WgwbeRuYTBixGl67gBIWPd+DSkfFre8+XolHbMYW11b64JM2GnfzpOW5+SoEIsur+9l2cUn41Dzjfa0D8aU6Wi85tczscZS5dsoCTct1/wYCs77JnNMipe0Ylw=" />
+        <!-- 以上为阿里云第三代 sopFix 热修复 -->
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
