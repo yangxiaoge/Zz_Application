@@ -56,6 +56,8 @@ public class SophixStubApplication extends SophixApplication {
                             Log.i(TAG, "sophix load patch success!");
                         } else if (code == PatchStatus.CODE_LOAD_RELAUNCH) {
                             // 如果需要在后台重启，建议此处用SharePreference保存状态。
+                            // 建议: 用户可以监听进入后台事件, 然后调用killProcessSafely自杀，以此加快应用补丁，详见1.3.2.3
+                            // TODO: 2018/7/6 这里可以增加重启app的代码，因为补丁加载之后需要重新启动才能生效
                             Log.i(TAG, "sophix preload patch success. restart app to make effect.");
                         } else {
                             // 其它错误信息, 查看PatchStatus类说明
