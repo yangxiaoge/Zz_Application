@@ -28,17 +28,21 @@ public class SmsObserver extends ContentObserver {
     @Override
     public void onChange(boolean selfChange) {
         super.onChange(selfChange);
-        String code = "";
-        String[] projection = new String[]{"body", "address"};//"_id", "address", "person",, "date", "type
+        String[] projection = new String[]{"body", "address", "person"};//"_id", "address", "person",, "date", "type
         Cursor cur = mContext.getContentResolver().query(SMS_INBOX, projection, null, null, "date desc");
 
         if (cur != null) {
             if (cur.moveToFirst()) {
-                String address = cur.getString(cur.getColumnIndex("address"));
-                String body = cur.getString(cur.getColumnIndex("body"));
+                try {
+                    String address = cur.getString(cur.getColumnIndex("address"));
+                    String body = cur.getString(cur.getColumnIndex("body"));
 
-                smsSpeakCallback.smsText(body);
-                Log.i("TAG", "发件人为: " + address + "\n" + "短信内容: " + body);
+                    smsSpeakCallback.smsText(body);
+                    Log.i("SmsObserver", "发件人为: " + address + "\n" + "短信内容: " + body);
+                } catch (Exception e) {
+                    Log.i("SmsObserver", "获取短信异常");
+                    e.printStackTrace();
+                }
             }
             cur.close();
         }
