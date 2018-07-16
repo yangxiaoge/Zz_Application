@@ -42,9 +42,17 @@
             android:name="com.baidu.speech.VoiceRecognitionService"
             android:exported="false" />
 
-        <!--语音服务，用于开机启动-->
+        <!--语音识别服务，用于开机启动-->
         <service android:name=".voicerecognition.VoiceService" />
+        <!--语音播报-->
         <service android:name=".speech_sms.SpeechService" />
+        <!--开机广播-->
+        <receiver android:name=".MyBootReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".MainActivity">
             <intent-filter>

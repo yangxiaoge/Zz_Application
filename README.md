@@ -1,5 +1,9 @@
 # Zz_Application
 >供所有练习demo存放
+
+- 新增 `voicecontroldemo`
+  百度语音识别 & 语音播放
+
 - 新增 `danmu`项目
   1. `danmu`,自定义弹幕 BarrageView
   2. `rainview`,自定义下雨效果
