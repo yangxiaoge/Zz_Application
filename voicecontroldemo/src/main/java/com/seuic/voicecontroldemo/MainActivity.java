@@ -19,4 +19,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    protected void onDestroy() {
+        if (CheckUtil.isServiceWorked(this,"com.seuic.voicecontroldemo.speech_sms.SpeechService")){
+            stopService(new Intent(getBaseContext(),SpeechService.class));
+        }
+        super.onDestroy();
+    }
 }

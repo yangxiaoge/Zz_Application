@@ -3,6 +3,7 @@ package com.seuic.voicecontroldemo.speech_sms;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -24,8 +25,6 @@ import com.seuic.voicecontroldemo.speech_sms.util.OfflineResource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.seuic.voicecontroldemo.speech_sms.SmsObserver.SMS_INBOX;
 
 /**
  * Created by yangjianan on 2018/7/16.
@@ -50,7 +49,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
     // 离线发音选择，VOICE_FEMALE即为离线女声发音。
     // assets目录下bd_etts_common_speech_m15_mand_eng_high_am-mix_v3.0.0_20170505.dat为离线男声模型；
     // assets目录下bd_etts_common_speech_f7_mand_eng_high_am-mix_v3.0.0_20170512.dat为离线女声模型
-    protected String offlineVoice = OfflineResource.VOICE_MALE;
+    protected String offlineVoice = OfflineResource.VOICE_FEMALE;
 
     // ===============初始化参数设置完毕，更多合成参数请至getParams()方法中设置 =================
 
@@ -72,10 +71,10 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
 
     };
 
+    @SuppressLint("HandlerLeak")
     public Handler smsHandler = new Handler() {
         //这里可以进行回调的操作
         //TODO
-
     };
 
     private void handle(Message msg) {
@@ -84,7 +83,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
             case INIT_SUCCESS:
                 //TODO 初始化成功了
                 smsObserver = new SmsObserver(this, smsHandler, this);
-                getContentResolver().registerContentObserver(SMS_INBOX, true, smsObserver);
+                getContentResolver().registerContentObserver(Uri.parse("content://sms"), true, smsObserver);
                 Log.i(TAG, "初始化成功了，ok");
                 break;
             case PRINT:
@@ -198,7 +197,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
      * 获取音频流的方式见SaveFileActivity及FileSaveListener
      * 需要合成的文本text的长度不能超过1024个GBK字节。
      */
-    private void speak(String text) {
+    private synchronized void speak(String text) {
         // 需要合成的文本text的长度不能超过1024个GBK字节。
         if (TextUtils.isEmpty(text)) {
             return;
