@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.seuic.voicecontroldemo.Constants;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -25,7 +27,7 @@ public class OfflineResource {
 
     public static final String VOICE_DUXY = "X";
 
-    private static final String SAMPLE_DIR = "baiduTTS";
+    private static final String SAMPLE_DIR = Constants.TTSDIR_NAME;
 
     private AssetManager assets;
     private String destPath;
