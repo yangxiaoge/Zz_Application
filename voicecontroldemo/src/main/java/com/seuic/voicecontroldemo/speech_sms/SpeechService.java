@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.baidu.speech.EventManager;
 import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
@@ -58,14 +59,13 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
 
 
     @SuppressLint("HandlerLeak")
-    private Handler mainHandler = new Handler() {
+    private Handler speechHandler = new Handler() {
         /*
          * @param msg
          */
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            //不处理
             handle(msg);
         }
 
@@ -76,7 +76,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         //这里可以进行回调的操作
         //TODO
     };
-
+    private EventManager wp; // this是Activity或其它
     private void handle(Message msg) {
         int what = msg.what;
         switch (what) {
@@ -125,7 +125,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         LoggerProxy.printable(true); // 日志打印在logcat中
         // 设置初始化参数
         // 此处可以改为 含有您业务逻辑的SpeechSynthesizerListener的实现类
-        SpeechSynthesizerListener listener = new UiMessageListener(mainHandler);
+        SpeechSynthesizerListener listener = new UiMessageListener(speechHandler);
 
         Map<String, String> params = getParams();
 
@@ -134,7 +134,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         InitConfig initConfig = new InitConfig(appId, appKey, secretKey, ttsMode, params, listener);
 
         if (synthesizer != null) return;
-        synthesizer = new NonBlockSyntherizer(this, initConfig, mainHandler); // 此处可以改为MySyntherizer 了解调用过程
+        synthesizer = new NonBlockSyntherizer(this, initConfig, speechHandler); // 此处可以改为MySyntherizer 了解调用过程
     }
 
     /**
