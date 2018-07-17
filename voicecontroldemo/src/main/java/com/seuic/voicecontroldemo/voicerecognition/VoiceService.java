@@ -129,11 +129,13 @@ public class VoiceService extends Service implements IStatus {
                 String pName = p.packageName; // 获取包名
                 Log.d("tag", "packageName = " + pName);
 
+                //启动应用
                 Intent intent = packageManager.getLaunchIntentForPackage(pName);
                 if (intent == null) {
                     Toast.makeText(this, "您没有安装" + appName, Toast.LENGTH_LONG).show();
                 } else {
                     startActivity(intent);
+                    Toast.makeText(this, "已为您打开" + appName, Toast.LENGTH_LONG).show();
                 }
                 return;
             }

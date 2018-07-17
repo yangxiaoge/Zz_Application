@@ -1,73 +1,76 @@
 package com.seuic.voicecontroldemo;
 
-import android.content.ComponentName;
+import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.seuic.voicecontroldemo.speech_sms.SpeechService;
 import com.seuic.voicecontroldemo.voicerecognition.VoiceService;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.util.List;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity {
+    private RxPermissions rxPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        rxPermissions = new RxPermissions(this);
 
-        //SpeechService是否在运行中
-        if (!CheckUtil.isServiceWorked(this, "com.seuic.voicecontroldemo.speech_sms.SpeechService")) {
-            startService(new Intent(getBaseContext(), SpeechService.class));
-        }
+        //申请权限
+        rxPermissions.request(Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_PHONE_STATE, Manifest.permission.SEND_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        //VoiceService是否在运行中
-        if (!CheckUtil.isServiceWorked(this, "com.seuic.voicecontroldemo.voicerecognition.VoiceService")) {
-            startService(new Intent(getBaseContext(), VoiceService.class));
-        }
-    }  private void openApp1(String packageName) {
-        try {
-            PackageInfo pi = getPackageManager().getPackageInfo(packageName, 0);
+                    }
 
-            Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-            resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            resolveIntent.setPackage(pi.packageName);
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (!aBoolean) {
+                            Toast.makeText(MainActivity.this, "权限被拒绝,需要相应的权限才能启用", Toast.LENGTH_SHORT).show();
 
-            List<ResolveInfo> apps = getPackageManager().queryIntentActivities(resolveIntent, 0);
+                            //杀掉服务
+                            //SpeechService是否在运行中
+                            if (CheckUtil.isServiceWorked(MainActivity.this, "com.seuic.voicecontroldemo.speech_sms.SpeechService")) {
+                                stopService(new Intent(getBaseContext(), SpeechService.class));
+                            }
+                            //VoiceService是否在运行中
+                            if (CheckUtil.isServiceWorked(MainActivity.this, "com.seuic.voicecontroldemo.voicerecognition.VoiceService")) {
+                                stopService(new Intent(getBaseContext(), VoiceService.class));
+                            }
+                            //关闭页面
+                            finish();
+                        } else {
+                            //SpeechService是否在运行中
+                            if (!CheckUtil.isServiceWorked(MainActivity.this, "com.seuic.voicecontroldemo.speech_sms.SpeechService")) {
+                                startService(new Intent(getBaseContext(), SpeechService.class));
+                            }
 
-            ResolveInfo ri = apps.iterator().next();
-            if (ri != null ) {
-                String packageName1 = ri.activityInfo.packageName;
-                String className = ri.activityInfo.name;
+                            //VoiceService是否在运行中
+                            if (!CheckUtil.isServiceWorked(MainActivity.this, "com.seuic.voicecontroldemo.voicerecognition.VoiceService")) {
+                                startService(new Intent(getBaseContext(), VoiceService.class));
+                            }
+                        }
+                    }
 
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    @Override
+                    public void onError(Throwable e) {
 
-                ComponentName cn = new ComponentName(packageName1, className);
+                    }
 
-                intent.setComponent(cn);
-                startActivity(intent);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
-    @Override
-    protected void onDestroy() {
-        //不要杀服务，需要持续后台运行
-        /*//SpeechService是否在运行中
-        if (CheckUtil.isServiceWorked(this, "com.seuic.voicecontroldemo.speech_sms.SpeechService")) {
-            stopService(new Intent(getBaseContext(), SpeechService.class));
-        }
-        //VoiceService是否在运行中
-        if (CheckUtil.isServiceWorked(this, "com.seuic.voicecontroldemo.voicerecognition.VoiceService")) {
-            stopService(new Intent(getBaseContext(), VoiceService.class));
-        }*/
-        super.onDestroy();
-    }
 }
