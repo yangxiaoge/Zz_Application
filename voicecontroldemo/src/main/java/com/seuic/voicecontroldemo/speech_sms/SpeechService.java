@@ -2,12 +2,15 @@ package com.seuic.voicecontroldemo.speech_sms;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,7 +34,8 @@ import java.util.Map;
  * Created by yangjianan on 2018/7/16.
  * 语音合成
  */
-public class SpeechService extends Service implements MainHandlerConstant, SmsObserver.SmsSpeakCallback {
+public class SpeechService extends Service implements MainHandlerConstant, SmsObserver.SmsSpeakCallback,
+        CustomPhoneStateListener.IncomingPhoneCallback {
     private static final String TAG = SpeechService.class.getSimpleName();
     // ================== 初始化参数设置开始 ==========================
     /**
@@ -77,6 +81,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         //TODO
     };
     private EventManager wp; // this是Activity或其它
+
     private void handle(Message msg) {
         int what = msg.what;
         switch (what) {
@@ -110,6 +115,7 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         initialTts(); // 初始化TTS引擎
+        registerPhoneStateListener();
         return START_STICKY;
     }
 
@@ -193,6 +199,16 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
     }
 
     /**
+     * 来电电话回调
+     *
+     * @param phoneNumber phone
+     */
+    @Override
+    public void phoneNumber(String phoneNumber) {
+        speak(phoneNumber + "给您来电啦");
+    }
+
+    /**
      * speak 实际上是调用 synthesize后，获取音频流，然后播放。
      * 获取音频流的方式见SaveFileActivity及FileSaveListener
      * 需要合成的文本text的长度不能超过1024个GBK字节。
@@ -215,6 +231,14 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         }
     }
 
+    private void registerPhoneStateListener() {
+        CustomPhoneStateListener customPhoneStateListener = new CustomPhoneStateListener(this, this);
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+
     @Override
     public void onDestroy() {
         getContentResolver().unregisterContentObserver(smsObserver);
@@ -222,5 +246,4 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         Log.i(TAG, "释放资源成功");
         super.onDestroy();
     }
-
 }
