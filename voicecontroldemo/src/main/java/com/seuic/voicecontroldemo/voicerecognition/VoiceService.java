@@ -19,6 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.baidu.speech.asr.SpeechConstant;
+import com.seuic.voicecontroldemo.util.PhoneUtils;
 import com.seuic.voicecontroldemo.voicerecognition.control.MyRecognizer;
 import com.seuic.voicecontroldemo.voicerecognition.control.MyWakeup;
 import com.seuic.voicecontroldemo.voicerecognition.rg.IStatus;
@@ -94,11 +95,22 @@ public class VoiceService extends Service implements IStatus {
                     String res = str.split(":")[1];
                     if (TextUtils.isEmpty(res)) return;
 
+                    // 关键词 "打开微信",供测试用
+                    if (res.contains("打开微信")) {
+                        Intent intent = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                        if (intent == null) {
+                            Toast.makeText(this, "您没有安装微信", Toast.LENGTH_LONG).show();
+                        } else {
+                            startActivity(intent);
+                        }
+                        return;
+                    }
+
                     // 关键词 "打开"
                     if (res.contains("打开") && res.contains("地图")) {
                         String mapName = res.substring(res.indexOf("打开") + 2, res.indexOf("地图") + 2);
                         String destName = res.substring(res.indexOf("去") + 1);
-                        openApp(mapName, destName);
+                        openMap(mapName, destName);
                         return;
                     }
 
@@ -120,21 +132,23 @@ public class VoiceService extends Service implements IStatus {
                     }
 
                     // 关键词 "挂断"
-                    /*if (res.contains("挂断")) {
-                        boolean endCallSuccess = HangUpTelephonyUtil.endCall(this);
+                    if (res.contains("挂断") || res.contains("拒接")) {
+
+                        PhoneUtils.endCall(this);
+                        /*boolean endCallSuccess = HangUpTelephonyUtil.endCall(this);
                         if (!endCallSuccess) {
                             HangUpTelephonyUtil.killCall(this);
-                        }
+                        }*/
                         return;
-                    }*/
+                    }
                 }
             }
         }
 
     }
 
-    // 打开应用
-    private void openApp(String appName, String destnation) {
+    // 打开地图
+    private void openMap(String appName, String destnation) {
         PackageManager packageManager = getPackageManager();
         // 获取手机里的应用列表
         List<PackageInfo> pInfo = packageManager.getInstalledPackages(0);

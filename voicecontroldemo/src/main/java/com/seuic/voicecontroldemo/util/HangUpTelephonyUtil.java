@@ -4,12 +4,12 @@
 //import android.os.RemoteException;
 //import android.telephony.TelephonyManager;
 //
-//import com.android.internal.telephony.ITelephony;
-//
 //import java.lang.reflect.InvocationTargetException;
 //import java.lang.reflect.Method;
 //import java.util.concurrent.Executor;
 //import java.util.concurrent.Executors;
+//
+//import telephony.ITelephony;
 //
 ///**
 // * 封装挂断电话接口
