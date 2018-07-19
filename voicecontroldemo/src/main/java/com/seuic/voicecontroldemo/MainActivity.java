@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.seuic.voicecontroldemo.speech_sms.SpeechService;
@@ -21,8 +22,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //申请权限
-        requestPermission(Manifest.permission.READ_CONTACTS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CALL_PHONE,
-                Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        requestPermission(Manifest.permission.READ_CONTACTS,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**
@@ -49,8 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 .onDenied(new Action<List<String>>() {
                     @Override
                     public void onAction(@NonNull List<String> permissions) {
-                        Toast.makeText(MainActivity.this, "权限被拒绝,需要相应的权限才能启用", Toast.LENGTH_SHORT).show();
-
+                        Log.e("权限被拒绝", "权限被拒绝permissions = " + permissions.get(0));
+                        if (permissions.size() == 1 && permissions.contains(Manifest.permission.RECORD_AUDIO)) {
+                            Toast.makeText(MainActivity.this, "没有录音权限或者麦克风被其他应用占用", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "权限被拒绝,需要相应的权限才能启用", Toast.LENGTH_SHORT).show();
+                        }
                         //杀掉服务
                         //SpeechService是否在运行中
                         if (CheckUtil.isServiceWorked(MainActivity.this, "com.seuic.voicecontroldemo.speech_sms.SpeechService")) {
