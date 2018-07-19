@@ -34,8 +34,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    //权限
-    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.1@aar'
-    // RxJava2
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.3'
+    //permission
+    implementation 'com.yanzhenjie:permission:2.0.0-rc11'
+
+    //logback + slf4j
+    compile 'org.slf4j:slf4j-api:1.7.21'
 }

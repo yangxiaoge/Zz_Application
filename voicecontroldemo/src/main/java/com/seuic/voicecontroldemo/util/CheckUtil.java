@@ -1,4 +1,4 @@
-package com.seuic.voicecontroldemo;
+package com.seuic.voicecontroldemo.util;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
