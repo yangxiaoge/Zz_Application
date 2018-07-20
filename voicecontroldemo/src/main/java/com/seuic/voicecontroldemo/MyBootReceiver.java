@@ -16,7 +16,7 @@ public class MyBootReceiver extends BroadcastReceiver {
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())
                 || "android.media.AUDIO_BECOMING_NOISY".equals(intent.getAction()) ||
                 "android.net.conn.CONNECTIVITY_CHANGE".equals(intent.getAction())) {
-            Log.i("启动", "开机启动了，啊啊啊啊啊啊啊啊啊啊");
+            Log.i("启动", "广播启动了，啊啊啊啊啊啊啊啊啊啊");
 
             //SharedPreferences sp = context.getSharedPreferences("User", Context.MODE_PRIVATE);
 

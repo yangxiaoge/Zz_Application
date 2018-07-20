@@ -28,6 +28,8 @@ public class CustomPhoneStateListener extends PhoneStateListener {
 
     @Override
     public void onCallStateChanged(int state, String incomingNumber) {
+        /*Toast.makeText(mContext, "CustomPhoneStateListener state: "
+                + state + " incomingNumber: " + incomingNumber, Toast.LENGTH_SHORT).show();*/
         Log.d(TAG, "CustomPhoneStateListener state: "
                 + state + " incomingNumber: " + incomingNumber);
         switch (state) {

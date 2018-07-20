@@ -102,6 +102,7 @@ public class VoiceService extends Service implements IStatus {
                             Toast.makeText(this, "您没有安装微信", Toast.LENGTH_LONG).show();
                         } else {
                             startActivity(intent);
+                            Toast.makeText(this, "已为您打开微信", Toast.LENGTH_LONG).show();
                         }
                         return;
                     }
@@ -318,6 +319,7 @@ public class VoiceService extends Service implements IStatus {
             ContactInfo contactInfo = new ContactInfo(name, number);
             lists.add(contactInfo);
         }
+        cursor.close();
         return lists;
     }
 
@@ -376,8 +378,8 @@ public class VoiceService extends Service implements IStatus {
 
     @Override
     public void onDestroy() {
-        myWakeup.release();
-        myRecognizer.release();
+        if (myWakeup != null) myWakeup.release();
+        if (myRecognizer != null) myRecognizer.release();
         Log.i(TAG, "释放资源成功");
         super.onDestroy();
     }

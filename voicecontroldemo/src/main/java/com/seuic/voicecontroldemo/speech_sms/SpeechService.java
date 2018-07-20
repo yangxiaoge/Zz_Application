@@ -205,6 +205,10 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
      */
     @Override
     public void phoneNumber(String phoneNumber) {
+        if (TextUtils.isEmpty(phoneNumber)) {
+            Log.e(TAG, "号码为空");
+            return;
+        }
         speak(phoneNumber + "给您来电啦");
     }
 
@@ -231,16 +235,27 @@ public class SpeechService extends Service implements MainHandlerConstant, SmsOb
         }
     }
 
+    TelephonyManager telephonyManager;
+    CustomPhoneStateListener customPhoneStateListener;
+
+    //注册电话状态
     private void registerPhoneStateListener() {
-        CustomPhoneStateListener customPhoneStateListener = new CustomPhoneStateListener(this, this);
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        customPhoneStateListener = new CustomPhoneStateListener(this, this);
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager != null) {
             telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+    //反注册电话状态
+    private void unRegisterPhoneStateListener() {
+        if (telephonyManager != null) {
+            telephonyManager.listen(customPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
     }
 
     @Override
     public void onDestroy() {
+        unRegisterPhoneStateListener();
         getContentResolver().unregisterContentObserver(smsObserver);
         synthesizer.release();
         Log.i(TAG, "释放资源成功");
