@@ -32,7 +32,7 @@ public class SmsObserver extends ContentObserver {
         super.onChange(selfChange);
         String[] projection = new String[]{"body", "address", "person", "type", "date"};//"_id", "address", "person",, "date", "type"
         Cursor cur = mContext.getContentResolver().query(SMS_INBOX, projection,
-                null, null, "sms.date desc");
+                null, null, "date desc");
 
         if (cur != null) {
             if (cur.moveToFirst()) {

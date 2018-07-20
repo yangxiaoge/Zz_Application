@@ -94,6 +94,8 @@ public class VoiceService extends Service implements IStatus {
                     //取出语音信息
                     String res = str.split(":")[1];
                     if (TextUtils.isEmpty(res)) return;
+                    //测试直接发短信
+                    // sendMessage("13804714681", "测试7.1直接发送短信");
 
                     // 关键词 "打开微信",供测试用
                     if (res.contains("打开微信")) {
@@ -117,7 +119,13 @@ public class VoiceService extends Service implements IStatus {
 
                     // 关键词 "打电话"
                     if (res.contains("打电话")) {
-                        String phoneOrName = res.substring(res.indexOf("打电话给") + 4);
+                        if (!res.contains("给")) return;
+                        String phoneOrName = null;
+                        if (res.indexOf("给") > res.indexOf("打电话")) { //打电话给张三
+                            phoneOrName = res.substring(res.indexOf("打电话给") + 4);
+                        } else if (res.indexOf("打电话") > res.indexOf("给")) { //给张三打电话
+                            phoneOrName = res.substring(res.indexOf("给") + 1, res.indexOf("打电话"));
+                        }
                         Log.i(TAG, "打电话 " + phoneOrName);
                         call(phoneOrName);
                         return;
@@ -201,6 +209,8 @@ public class VoiceService extends Service implements IStatus {
             intent.putExtra("sms_body", message);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            //发送短信方法二, 直接发送出去
+            //sendMessage(number, message);
         } else { //姓名
             List<ContactInfo> contactLists = getContactLists(this);
             if (contactLists.isEmpty()) {
@@ -214,12 +224,12 @@ public class VoiceService extends Service implements IStatus {
                     String number = contactInfo.getNumber();
                     Log.i(TAG, "根据姓名取出电话号码 " + number);
 
-                    //发送短信方法一
+                    //发送短信方法一，需要手动触发发送
                     Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + number));
                     intent.putExtra("sms_body", message);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    //发送短信方法二
+                    //发送短信方法二, 直接发送出去
                     //sendMessage(number, message);
                     return;
                 }
@@ -269,6 +279,7 @@ public class VoiceService extends Service implements IStatus {
 
     // 打电话
     private void call(String phoneOrName) {
+        if (TextUtils.isEmpty(phoneOrName)) return;
         if (isNumeric(phoneOrName)) {
             Toast.makeText(this, "已经为您拨通 " + phoneOrName
                     , Toast.LENGTH_SHORT).show();
