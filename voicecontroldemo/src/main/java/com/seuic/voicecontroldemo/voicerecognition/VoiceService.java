@@ -131,10 +131,21 @@ public class VoiceService extends Service implements IStatus {
                         return;
                     }
 
-                    // 关键词 "打电话"
                     //给XXX回复短信，短信内容是XXXX。
-                    if (res.contains("回复") && res.contains("短信")) {
+                    if (res.contains("回复") && res.contains("短信") && res.contains("短信内容是")) {
                         String name = res.substring(res.indexOf("给") + 1, res.indexOf("回复短信"));
+                        String content = res.substring(res.indexOf("短信内容是") + 5);
+                        doSendSMSTo(name, content);
+                        return;
+                    }
+                    //发短信给XXX，短信内容是XXXX (给XXX发短信，短信内容是XXXX)
+                    if (res.contains("发短信") && res.contains("给") && res.contains("短信内容是")) {
+                        String name = null;
+                        if ((res.indexOf("给") > res.indexOf("发短信"))) {
+                            name = res.substring(res.indexOf("给") + 1, res.indexOf("短信内容是"));
+                        } else if (res.indexOf("发短信") > res.indexOf("给")) {
+                            name = res.substring(res.indexOf("给") + 1, res.indexOf("发短信"));
+                        }
                         String content = res.substring(res.indexOf("短信内容是") + 5);
                         doSendSMSTo(name, content);
                         return;
