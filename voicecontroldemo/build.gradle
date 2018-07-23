@@ -39,4 +39,7 @@ dependencies {
 
     //logback + slf4j
     compile 'org.slf4j:slf4j-api:1.7.21'
+
+    //pinyin4j
+    compile 'com.github.open-android:pinyin4j:2.5.0'
 }

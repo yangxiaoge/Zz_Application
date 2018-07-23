@@ -28,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.READ_SMS,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        //-------------------默认格式转换-----------------------------
+        /*String[] pyStrs = PinyinHelper.toHanyuPinyinStringArray('重');
+
+        for (String s : pyStrs) {
+            Log.i("pinyin",s);
+        }*/
     }
 
     /**
