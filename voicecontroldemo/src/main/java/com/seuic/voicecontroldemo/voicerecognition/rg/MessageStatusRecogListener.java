@@ -43,7 +43,8 @@ public class MessageStatusRecogListener extends StatusRecogListener {
 
     @Override
     public void onAsrPartialResult(String[] results, RecogResult recogResult) {
-        sendStatusMessage("临时识别结果，结果是“" + results[0] + "”；原始json：" + recogResult.getOrigalJson());
+        //sendStatusMessage("临时识别结果，结果是“" + results[0] + "”；原始json：" + recogResult.getOrigalJson());
+        sendStatusMessage("临时识别结果，结果是“" + results[0] + "”");
         super.onAsrPartialResult(results, recogResult);
     }
 

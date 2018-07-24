@@ -10,7 +10,8 @@ import java.io.File;
 public class Constants {
     //TTS Speak的相关文件目录名称
     public static final String TTSDIR_NAME = "seuicbaiduTTS";
-    //public static final String RECONGNITIONDIR_NAME = "seuicbaiduASR";
+    //ASR 语音识别相关文件目录名称
+    public static final String RECONGNITIONDIR_NAME = "seuicbaiduASR";
 
     //日志路径
     public static final String APP_FILE_PATH = Environment.getExternalStorageDirectory()

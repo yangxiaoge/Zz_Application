@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.seuic.voicecontroldemo.speech_sms.SpeechService;
 import com.seuic.voicecontroldemo.util.CheckUtil;
-import com.seuic.voicecontroldemo.voicerecognition.VoiceService;
 
 public class MyBootReceiver extends BroadcastReceiver {
 
@@ -28,7 +27,7 @@ public class MyBootReceiver extends BroadcastReceiver {
             }
             //VoiceService是否在运行中
             if (!CheckUtil.isServiceWorked(context, "com.seuic.voicecontroldemo.voicerecognition.VoiceService")) {
-                context.startService(new Intent(context, VoiceService.class));
+//                context.startService(new Intent(context, VoiceService.class));
             }
         }
     }
