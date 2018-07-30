@@ -33,6 +33,8 @@ public class WebSocketActivity extends AppCompatActivity {
     @BindView(R.id.m_content_tv)
     TextView mContentTv;
 
+    private boolean isConnected; //是否连接上服务器
+
     private WebSocketClient mSocketClient;
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -40,7 +42,7 @@ public class WebSocketActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            mContentTv.setText(mContentTv.getText() + "\n" + msg.obj);
+            mContentTv.append(msg.obj.toString() + "\n");
         }
     };
 
@@ -61,6 +63,7 @@ public class WebSocketActivity extends AppCompatActivity {
                     mSocketClient = new WebSocketClient(new URI("ws://192.168.81.124:1021/"), new Draft_10()) {
                         @Override
                         public void onOpen(ServerHandshake handshakedata) {
+                            isConnected = true;
                             Log.d("picher_log", "打开通道" + handshakedata.getHttpStatus());
                             handler.obtainMessage(0, /*message*/"打开通道").sendToTarget();
                         }
@@ -73,13 +76,15 @@ public class WebSocketActivity extends AppCompatActivity {
 
                         @Override
                         public void onClose(int code, String reason, boolean remote) {
-                            Log.d("picher_log", "通道关闭");
+                            isConnected = false;
+                            Log.d("picher_log", "通道关闭 " + reason);
                             handler.obtainMessage(0, /*message*/"通道关闭").sendToTarget();
                         }
 
                         @Override
                         public void onError(Exception ex) {
-                            Log.d("picher_log", "链接错误");
+                            isConnected = false;
+                            Log.d("picher_log", "链接错误 " + ex.getMessage());
                         }
                     };
                     mSocketClient.connect();
@@ -94,8 +99,14 @@ public class WebSocketActivity extends AppCompatActivity {
         mSentBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isConnected) {
+                    init();
+                    return;
+                }
+
                 if (mSocketClient != null) {
                     mSocketClient.send(mContentEt.getText().toString().trim());
+                    mContentEt.setText("");
                 }
             }
         });
