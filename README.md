@@ -1,6 +1,8 @@
 # Zz_Application
 >供所有练习demo存放
 
+- 新增 `websocket`
+
 - 新增 `voicecontroldemo`
   百度语音识别 & 语音播放
 
