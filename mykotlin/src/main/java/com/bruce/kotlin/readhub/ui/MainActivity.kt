@@ -10,7 +10,6 @@ import com.bruce.kotlin.readhub.ui.fragment.HotFragment
 import com.bruce.kotlin.readhub.ui.fragment.MimeFragment
 import com.bruce.kotlin.readhub.ui.fragment.NewsFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     var findFragment: NewsFragment? = null
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      * 获取当前属于星期几
      */
     private fun getToday(): String {
-        val dayList = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+        /*val dayList = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
         val data = Date()
         val calendar: Calendar = Calendar.getInstance()
         calendar.time = data
@@ -83,7 +82,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (index < 0) {
             index = 0
         }
-        return dayList[index]
+        return dayList[index]*/
+
+        return getString(R.string.tab_hot)
     }
 
     /**
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     /**
      * 点击事件
      */
+    @Suppress("DEPRECATION")
     override fun onClick(v: View?) {
         clearState();
         when (v?.id) {
@@ -148,6 +150,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     /**
      * 清除所有 nav 的状态
      */
+    @Suppress("DEPRECATION")
     private fun clearState() {
         rg_nav.clearCheck()
         rb_find.setTextColor(resources.getColor(android.R.color.darker_gray))

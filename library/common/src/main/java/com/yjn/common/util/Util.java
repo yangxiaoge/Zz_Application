@@ -7,8 +7,6 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.zhy.autolayout.utils.AutoUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -41,18 +39,6 @@ public class Util {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
-
-    /**
-     * 动态设置TextSize，根据比例设置字体大小
-     *
-     * @param pxVal 如48px
-     * @return 比例适配后的px值
-     */
-    public static int getAutoLayoutTextSize(int pxVal) {
-        int textSize = AutoUtils.getPercentHeightSizeBigger(pxVal);
-        return textSize;
-    }
-
 
     /**
      * bitmap转为base64
@@ -159,20 +145,20 @@ public class Util {
         return ip;
     }
 
-    public static int getScreenWithPx(Context context){
+    public static int getScreenWithPx(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
         return screenWidth;
     }
 
-    public static int getScreenHeightPx(Context context){
+    public static int getScreenHeightPx(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         int screenHeight = metrics.heightPixels;
         return screenHeight;
     }
 
-    public static String getMacAddress(){
- /*获取mac地址有一点需要注意的就是android 6.0版本后，以下注释方法不再适用，不管任何手机都会返回"02:00:00:00:00:00"这个默认的mac地址，这是googel官方为了加强权限管理而禁用了getSYstemService(Context.WIFI_SERVICE)方法来获得mac地址。*/
+    public static String getMacAddress() {
+        /*获取mac地址有一点需要注意的就是android 6.0版本后，以下注释方法不再适用，不管任何手机都会返回"02:00:00:00:00:00"这个默认的mac地址，这是googel官方为了加强权限管理而禁用了getSYstemService(Context.WIFI_SERVICE)方法来获得mac地址。*/
         //        String macAddress= "";
 //        WifiManager wifiManager = (WifiManager) MyApp.getContext().getSystemService(Context.WIFI_SERVICE);
 //        WifiInfo wifiInfo = wifiManager.getConnectionInfo();

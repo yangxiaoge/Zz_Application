@@ -58,6 +58,39 @@ import butterknife.ButterKnife;
 //    }
 //}
 public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel> extends Fragment {
+
+    private boolean isFragmentVisiable = false;
+    private boolean isFirst = false;
+
+    /**
+     * 此方法 再 onCreateView 生命周期之前
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            isFragmentVisiable = true;
+        }
+        if (rootView == null) {
+            return;
+        }
+
+        //可见，并且没有加载过
+        if (!isFirst && isFragmentVisiable) {
+            onFragmentVisiableChange(true);
+            return;
+        }
+        //由可见——>不可见 已经加载过
+        if (isFragmentVisiable) {
+            onFragmentVisiableChange(false);
+            isFragmentVisiable = false;
+        }
+    }
+
+    private void onFragmentVisiableChange(boolean b) {
+
+    }
+
     protected View rootView;
     public T mPresenter;
     public E mModel;
@@ -78,15 +111,15 @@ public abstract class BaseFragment<T extends BasePresenter, E extends BaseModel>
         }
         ButterKnife.bind(this, rootView);
         initPresenter();
-        initView();
         initLoading();
+        initView();
         return rootView;
     }
 
     /**
      * 初始化 Loading
      */
-    private void initLoading() {
+    public void initLoading() {
         dialog = KProgressHUD.create(mContext)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 //.setLabel("Please wait")

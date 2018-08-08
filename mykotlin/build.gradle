@@ -39,6 +39,14 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.just.agentweb:agentweb:4.0.2'
 
+    // butterknife
+    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+
+    //刷新控件
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-14'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'//没有使用特殊Header，可以不加这行
+
     // 依赖库
     implementation project(':library:common')
 }

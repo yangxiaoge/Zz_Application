@@ -7,17 +7,16 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.yjn.common.baserx.RxManager;
 import com.yjn.common.util.TUtil;
 import com.yjn.common.util.ToastUtil;
-import com.zhy.autolayout.AutoLayoutActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -60,7 +59,7 @@ import butterknife.ButterKnife;
 //    public void initView() {
 //    }
 //}
-public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel> extends AutoLayoutActivity {
+public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel> extends AppCompatActivity {
     public T mPresenter;
     public E mModel;
     public Context mContext;
@@ -68,8 +67,6 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
     private boolean isConfigChange = false;
     protected final String TAG = getClass().getSimpleName();
     protected boolean isFinished = false;
-    //    private Unbinder unbinder;
-    private ImmersionBar mImmersionBar;
     public KProgressHUD dialog;
 
     @Override
@@ -165,9 +162,6 @@ public abstract class BaseActivity<T extends BasePresenter, E extends BaseModel>
         if (!isConfigChange) {
             AppManager.getAppManager().finishActivity(this);
         }
-
-        if (mImmersionBar != null)
-            mImmersionBar.destroy();  //必须调用该方法，防止内存泄漏，不调用该方法，如果界面bar发生改变，在不关闭app的情况下，退出此界面再进入将记忆最后一次bar改变的状态
     }
 
     /*--------------------------------Handler---------------------------------*/

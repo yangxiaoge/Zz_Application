@@ -28,31 +28,35 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
     // 网络框架
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    api 'com.squareup.retrofit2:retrofit:2.3.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.10.0'
     //指示器
-    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    api 'com.github.hackware1993:MagicIndicator:1.5.0'
     // gson转换,配合网络框架
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    api 'com.squareup.retrofit2:converter-gson:2.3.0'
     // retrofit2支持RxJava2扩展包
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // Json转换
+    api 'com.alibaba:fastjson:1.2.47'
+    api 'com.alibaba:fastjson:1.2.47.android'
 
     // RxJava2
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    api 'io.reactivex.rxjava2:rxjava:2.1.9'
     // RxJava2安卓扩展包
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
     // 分包机制(65535限制)
-    implementation 'com.android.support:multidex:1.0.3'
+    api 'com.android.support:multidex:1.0.3'
     // 下拉上拉
-    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    api 'com.lcodecorex:tkrefreshlayout:1.0.7'
 
-    implementation "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"
-    implementation "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"
+    api "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"
+    api "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"
 
-    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
+    api "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
 
     // 仿 ios loading

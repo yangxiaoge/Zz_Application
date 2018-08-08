@@ -16,7 +16,7 @@ public class ToastUtil {
     private static Toast initToast(Context mContext, CharSequence message, int duration) {
         if (toast == null) {
             toast = Toast.makeText(mContext, message, duration);
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, (int) Util.dip2px(mContext, 50));
+            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, (int) Util.dip2px(mContext,50));
         } else {
             toast.setText(message);
             toast.setDuration(duration);
