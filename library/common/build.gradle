@@ -1,0 +1,61 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 22
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+	// This is important, it will run lint checks but won't abort build  
+	lintOptions {  
+        //build release 版本 时 开启lint 检测
+		checkReleaseBuilds true
+		//lint 遇到 error 时继续 构建
+		abortOnError false
+	} 
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // 网络框架
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    //指示器
+    implementation 'com.github.hackware1993:MagicIndicator:1.5.0'
+    // gson转换,配合网络框架
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    // retrofit2支持RxJava2扩展包
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // RxJava2
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    // RxJava2安卓扩展包
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+    // 分包机制(65535限制)
+    implementation 'com.android.support:multidex:1.0.3'
+    // 下拉上拉
+    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+
+    implementation "net.qiujuer.genius:ui:$rootProject.ext.geniusVersion"
+    implementation "net.qiujuer.genius:res:$rootProject.ext.geniusVersion"
+
+    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+
+    // 仿 ios loading
+    api 'com.kaopiz:kprogresshud:1.2.0'
+
+}

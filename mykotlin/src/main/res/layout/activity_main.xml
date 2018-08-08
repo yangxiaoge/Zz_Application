@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.bruce.kotlin.mytest.ui.MainActivity">
+    tools:context="com.bruce.kotlin.readhub.ui.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white">
+        android:background="@color/colorPrimary">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,6 +21,7 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center"
+                android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
             <ImageView
@@ -62,28 +63,22 @@
         android:padding="5dp">
 
         <RadioButton
-            android:id="@+id/rb_home"
+            android:id="@+id/rb_hot"
             style="@style/rb_nav_style"
-            android:drawableTop="@drawable/rb_home_bg_selected"
-            android:text="首页" />
+            android:drawableTop="@drawable/rb_hot_bg_selected"
+            android:text="@string/tab_hot" />
 
         <RadioButton
             android:id="@+id/rb_find"
             style="@style/rb_nav_style"
             android:drawableTop="@drawable/rb_find_bg_selected"
-            android:text="发现" />
-
-        <RadioButton
-            android:id="@+id/rb_hot"
-            style="@style/rb_nav_style"
-            android:drawableTop="@drawable/rb_hot_bg_selected"
-            android:text="热门" />
+            android:text="@string/tab_news" />
 
         <RadioButton
             android:id="@+id/rb_mine"
             style="@style/rb_nav_style"
-            android:drawableTop="@drawable/ic_tab_strip_icon_profile"
-            android:text="我的" />
+            android:drawableTop="@drawable/rb_mine_bg_selected"
+            android:text="@string/tab_mine" />
     </RadioGroup>
 
 </RelativeLayout>

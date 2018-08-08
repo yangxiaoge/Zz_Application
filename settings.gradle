@@ -1,2 +1,3 @@
 include ':webdialog', ':multirecycleitem', ':mykotlin', ':hencoder1-1',':greendaodemo', ':custsignview', ':gaopaiyi', ':alisophix', ':danmu', ':voicecontroldemo', ':websocket'
+include ':library:common'
 //include ':gaopaiyi'
