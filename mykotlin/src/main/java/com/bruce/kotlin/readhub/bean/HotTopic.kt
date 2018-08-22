@@ -24,16 +24,16 @@ class HotTopic {
      * extra : {"instantView":false}
      */
 
-     val id: String? = null
-     val createdAt: String? = null
+    val id: String? = null
+    val createdAt: String? = null
     //    private NelDataBean nelData;
     //    private EventDataBean eventData;
-     val order: Long = 0
-     val publishDate: String? = null
+    val order: Long = 0
+    val publishDate: String? = null
     var summary: String? = null
     var title: String? = null
-     val updatedAt: String? = null
-     val timeline: Any? = null
+    val updatedAt: String? = null
+    val timeline: Any? = null
     //    private ExtraBean extra;
     //    private java.util.List<NewsArrayBean> newsArray;
 }
